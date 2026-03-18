@@ -1,0 +1,51 @@
+[27-Nov-2025 09:13:51 UTC] Cron reschedule event error for hook: action_scheduler_run_queue, Error code: invalid_schedule, Error message: Event schedule does not exist., Data: {"schedule":"every_minute","args":["WP Cron"],"interval":60}
+[08-Dec-2025 06:19:51 UTC] PHP Parse error:  syntax error, unexpected token "endif" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page.php on line 45
+[10-Dec-2025 05:48:30 UTC] Cron reschedule event error for hook: wp_privacy_delete_old_export_files, Error code: could_not_set, Error message: The cron event list could not be saved., Data: {"schedule":"hourly","args":[],"interval":3600}
+[10-Dec-2025 05:50:48 UTC] PHP Parse error:  syntax error, unexpected token "=>" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\inc\customizer.php on line 247
+[10-Dec-2025 05:50:54 UTC] PHP Parse error:  syntax error, unexpected token "=>" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\inc\customizer.php on line 247
+[10-Dec-2025 05:50:59 UTC] PHP Parse error:  syntax error, unexpected token "=>" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\inc\customizer.php on line 247
+[11-Dec-2025 05:51:32 UTC] PHP Warning:  Undefined variable $show_container in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\template-parts\sections\testimonial-slider-section.php on line 85
+[11-Dec-2025 05:51:34 UTC] PHP Warning:  Undefined variable $show_container in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\template-parts\sections\testimonial-slider-section.php on line 85
+[11-Dec-2025 10:09:50 UTC] PHP Warning:  Undefined variable $featured_id in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-blog-landing.php on line 42
+[11-Dec-2025 10:18:24 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:24 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:24 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:24 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:41 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:41 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:41 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:50 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:50 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:50 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:50 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:50 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:50 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:52 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:52 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[11-Dec-2025 10:18:52 UTC] PHP Warning:  foreach() argument must be of type array|object, bool given in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-theme-json.php on line 3870
+[23-Feb-2026 15:44:29 UTC] PHP Warning:  Undefined variable $cd_cs_results_count in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-case-study-landing.php on line 23
+[23-Feb-2026 15:44:29 UTC] PHP Warning:  Undefined variable $cd_cs_get_detail_url in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-case-study-landing.php on line 48
+[23-Feb-2026 15:44:29 UTC] PHP Fatal error:  Uncaught Error: Value of type null is not callable in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-case-study-landing.php:48
+Stack trace:
+#0 C:\Users\chira\Local Sites\craft\app\public\wp-includes\template-loader.php(125): include()
+#1 C:\Users\chira\Local Sites\craft\app\public\wp-blog-header.php(19): require_once('C:\\Users\\chira\\...')
+#2 C:\Users\chira\Local Sites\craft\app\public\index.php(17): require('C:\\Users\\chira\\...')
+#3 {main}
+  thrown in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-case-study-landing.php on line 48
+[23-Feb-2026 17:49:49 UTC] PHP Parse error:  syntax error, unexpected identifier "re", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 126
+[23-Feb-2026 17:52:07 UTC] PHP Parse error:  syntax error, unexpected identifier "re", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 126
+[23-Feb-2026 18:04:47 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\inc\acf.php on line 1369
+[23-Feb-2026 18:04:47 UTC] PHP Warning:  Trying to access array offset on value of type bool in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-recovery-mode-email-service.php on line 367
+[23-Feb-2026 18:04:47 UTC] PHP Warning:  Trying to access array offset on value of type bool in C:\Users\chira\Local Sites\craft\app\public\wp-includes\class-wp-recovery-mode-email-service.php on line 368
+[23-Feb-2026 18:04:53 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\inc\acf.php on line 1369
+[24-Feb-2026 05:29:58 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 05:30:04 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 05:30:22 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 07:34:43 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 07:34:53 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 07:34:54 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 07:36:14 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[24-Feb-2026 07:36:15 UTC] PHP Parse error:  syntax error, unexpected identifier "s", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\page-templates\page-service-detail.php on line 157
+[25-Feb-2026 13:51:28 UTC] PHP Parse error:  syntax error, unexpected identifier "re", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\single-service.php on line 72
+[25-Feb-2026 13:51:34 UTC] PHP Parse error:  syntax error, unexpected identifier "re", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\single-service.php on line 72
+[25-Feb-2026 14:08:03 UTC] PHP Parse error:  syntax error, unexpected identifier "re", expecting ")" in C:\Users\chira\Local Sites\craft\app\public\wp-content\themes\CraftDigitally\single-service.php on line 72

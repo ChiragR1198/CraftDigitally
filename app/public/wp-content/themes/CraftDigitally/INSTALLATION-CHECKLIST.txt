@@ -1,0 +1,286 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                   CRAFTDIGITALLY THEME INSTALLATION                          ║
+║                           COMPLETE CHECKLIST                                 ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+📋 PRE-INSTALLATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ WordPress 5.0+ installed
+☐ PHP 7.4+ available
+☐ MySQL 5.6+ available
+☐ Admin access to WordPress
+☐ FTP/File Manager access (if needed)
+
+📦 THEME INSTALLATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Upload theme to /wp-content/themes/CraftDigitally/
+☐ Go to Appearance → Themes
+☐ Click "Activate" on CraftDigitally theme
+☐ Verify theme activated successfully
+
+🏠 HOMEPAGE SETUP
+═══════════════════════════════════════════════════════════════════════════════
+☐ Go to Settings → Reading
+☐ Select "A static page"
+☐ Set "Front page" as Homepage
+☐ Set "Blog" page as Posts page
+☐ Save Changes
+
+📱 MENU CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Go to Appearance → Menus
+☐ Create "Primary Menu"
+☐ Add pages: Home, About, Services, Blog, Contact
+☐ Check "Primary Menu" location
+☐ Save Menu
+
+☐ Create "Footer Menu" (optional)
+☐ Add pages: About, Case Studies, Blog, Career
+☐ Check "Footer Menu" location
+☐ Save Menu
+
+☐ Create "Social Menu" (optional)
+☐ Add custom links (Twitter, LinkedIn, Instagram)
+☐ Check "Footer Social Menu" location
+☐ Save Menu
+
+🎨 CUSTOMIZER SETTINGS
+═══════════════════════════════════════════════════════════════════════════════
+☐ Go to Appearance → Customize
+☐ Site Identity:
+  ☐ Upload logo (400×100px recommended)
+  ☐ Set Site Title
+  ☐ Set Tagline
+  ☐ Upload Site Icon (favicon)
+☐ Theme Options:
+  ☐ Configure hero section visibility
+  ☐ Customize hero text (if needed)
+☐ Colors (optional):
+  ☐ Adjust primary color
+  ☐ Customize text colors
+☐ Click "Publish"
+
+📄 CREATE PAGES
+═══════════════════════════════════════════════════════════════════════════════
+☐ Home (set as Front page)
+☐ About
+☐ Services
+☐ Blog (set as Posts page)
+☐ Contact
+☐ Privacy Policy (required)
+☐ Terms & Conditions (optional)
+
+📝 CONTENT SETUP
+═══════════════════════════════════════════════════════════════════════════════
+☐ Edit front-page.php or use page builder
+☐ Update case studies section
+☐ Update testimonials section
+☐ Update services section
+☐ Update process steps
+☐ Configure contact form
+☐ Upload images to Media Library
+☐ Replace placeholder content
+
+🧩 WIDGETS CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Go to Appearance → Widgets
+☐ Sidebar Widget Area:
+  ☐ Add Search widget
+  ☐ Add Recent Posts widget
+  ☐ Add Categories widget
+☐ Footer Widget Area 1:
+  ☐ Add Text/HTML widget
+  ☐ Or Recent Posts
+☐ Footer Widget Area 2:
+  ☐ Add Text widget
+  ☐ Or Custom Menu
+
+🔌 RECOMMENDED PLUGINS
+═══════════════════════════════════════════════════════════════════════════════
+Essential:
+☐ Yoast SEO or All In One SEO Pack
+☐ Contact Form 7 or WPForms
+☐ Akismet Anti-Spam
+☐ UpdraftPlus (Backups)
+
+Optional:
+☐ WooCommerce (if selling online)
+☐ WP Rocket (performance)
+☐ Elementor (page builder)
+☐ Jetpack (features)
+
+⚙️ WORDPRESS SETTINGS
+═══════════════════════════════════════════════════════════════════════════════
+☐ Settings → General:
+  ☐ Site Title & Tagline
+  ☐ WordPress Address (URL)
+  ☐ Site Address (URL)
+  ☐ Admin Email
+  ☐ Timezone
+  ☐ Date Format
+  ☐ Time Format
+
+☐ Settings → Reading:
+  ☐ Static page as homepage ✓
+  ☐ Posts per page: 10
+  ☐ For search engines: Unchecked (after going live)
+
+☐ Settings → Discussion:
+  ☐ Default post settings
+  ☐ Comment moderation
+  ☐ Avatar display
+
+☐ Settings → Permalinks:
+  ☐ Select "Post name" (recommended)
+  ☐ Save changes
+
+🔍 SEO CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Install Yoast SEO or similar
+☐ Configure site title & description
+☐ Set up XML sitemap
+☐ Connect to Google Search Console
+☐ Connect to Google Analytics
+☐ Set up meta descriptions for pages
+☐ Add social media meta tags
+☐ Configure OpenGraph settings
+
+📧 EMAIL CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Test default contact form
+☐ Verify emails being sent/received
+☐ Install WP Mail SMTP (if emails not working)
+☐ Configure SMTP settings
+☐ Test form again
+
+🛒 WOOCOMMERCE SETUP (If Using)
+═══════════════════════════════════════════════════════════════════════════════
+☐ Install WooCommerce plugin
+☐ Run setup wizard
+☐ Configure store settings
+☐ Add products
+☐ Set up payment gateways
+☐ Configure shipping
+☐ Test checkout process
+☐ Style customization (already included)
+
+🔒 SECURITY
+═══════════════════════════════════════════════════════════════════════════════
+☐ Install security plugin (Wordfence, Sucuri)
+☐ Change default "admin" username
+☐ Use strong passwords
+☐ Enable Two-Factor Authentication
+☐ Limit login attempts
+☐ Hide WordPress version
+☐ Disable file editing in wp-config.php
+☐ Set up SSL certificate
+☐ Change database prefix (if possible)
+
+⚡ PERFORMANCE OPTIMIZATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Install caching plugin (WP Rocket, W3 Total Cache)
+☐ Optimize images (Smush, ShortPixel)
+☐ Enable Gzip compression
+☐ Minify CSS/JS (Autoptimize)
+☐ Enable lazy loading
+☐ Use CDN (Cloudflare)
+☐ Optimize database
+☐ Remove unused plugins
+☐ Test site speed (GTmetrix, PageSpeed Insights)
+
+💾 BACKUP CONFIGURATION
+═══════════════════════════════════════════════════════════════════════════════
+☐ Install UpdraftPlus or similar
+☐ Configure backup schedule
+☐ Set up remote storage (Dropbox, Google Drive)
+☐ Test backup restoration
+☐ Schedule weekly backups
+
+📱 MOBILE TESTING
+═══════════════════════════════════════════════════════════════════════════════
+☐ Test on mobile devices:
+  ☐ iPhone
+  ☐ Android phone
+  ☐ iPad/Tablet
+☐ Test menu functionality
+☐ Test forms on mobile
+☐ Check image loading
+☐ Verify touch interactions
+
+🌐 BROWSER TESTING
+═══════════════════════════════════════════════════════════════════════════════
+☐ Google Chrome
+☐ Mozilla Firefox
+☐ Safari
+☐ Microsoft Edge
+☐ Mobile browsers
+
+✅ PRE-LAUNCH CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+☐ All pages created and published
+☐ All menus configured
+☐ Logo uploaded
+☐ Contact form working
+☐ Email notifications working
+☐ All links tested
+☐ No 404 errors
+☐ Images optimized
+☐ Meta descriptions set
+☐ Analytics connected
+☐ Search Console connected
+☐ SSL certificate installed
+☐ Site speed optimized
+☐ Mobile responsive
+☐ Browser compatible
+☐ Backup configured
+☐ Security plugin active
+☐ Privacy policy page
+☐ Cookie consent (if EU traffic)
+☐ GDPR compliance (if needed)
+
+🚀 LAUNCH
+═══════════════════════════════════════════════════════════════════════════════
+☐ Final content review
+☐ Final design review
+☐ Test all functionality
+☐ Enable search engine indexing (Settings → Reading)
+☐ Submit sitemap to Google
+☐ Announce on social media
+☐ Monitor for errors
+☐ Check analytics daily
+
+📊 POST-LAUNCH MONITORING
+═══════════════════════════════════════════════════════════════════════════════
+☐ Monitor Google Analytics
+☐ Check Search Console for errors
+☐ Monitor site uptime
+☐ Check for broken links
+☐ Review security logs
+☐ Check backup status
+☐ Monitor site speed
+☐ Review user feedback
+
+🎉 OPTIONAL ENHANCEMENTS
+═══════════════════════════════════════════════════════════════════════════════
+☐ Add live chat widget
+☐ Set up email marketing (Mailchimp)
+☐ Add testimonials slider
+☐ Create custom 404 page design
+☐ Add schema markup
+☐ Set up Facebook Pixel
+☐ Add Instagram feed
+☐ Create blog content
+☐ Set up newsletter signup
+☐ Add exit-intent popup
+
+═══════════════════════════════════════════════════════════════════════════════
+                              CONGRATULATIONS! 🎊
+              Your CraftDigitally Theme is now ready to go live!
+═══════════════════════════════════════════════════════════════════════════════
+
+Need Help? 
+Email: support@craftdigitally.com
+Documentation: See README.md and SETUP-GUIDE.md
+
+═══════════════════════════════════════════════════════════════════════════════
+
