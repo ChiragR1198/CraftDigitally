@@ -80,9 +80,24 @@ require CRAFTDIGITALLY_DIR . '/inc/contact-form.php';
 require CRAFTDIGITALLY_DIR . '/inc/template-tags.php';
 
 /**
+ * Blog detail author block helpers
+ */
+require CRAFTDIGITALLY_DIR . '/inc/bdp-author.php';
+
+/**
+ * Blog detail table of contents anchors
+ */
+require CRAFTDIGITALLY_DIR . '/inc/bdp-toc.php';
+
+/**
  * Functions which enhance the theme by hooking into WordPress
  */
 require CRAFTDIGITALLY_DIR . '/inc/template-functions.php';
+
+/**
+ * Primary nav: Services mega-dropdown (all Service posts)
+ */
+require CRAFTDIGITALLY_DIR . '/inc/nav-services-dropdown.php';
 
 /**
  * Customizer additions
@@ -464,21 +479,20 @@ function craftdigitally_redirect_blog_detail_page_to_post_permalink() {
 add_action('template_redirect', 'craftdigitally_redirect_blog_detail_page_to_post_permalink', 2);
 
 /**
- * Redirect legacy case study detail page URLs to the native /case-studies/{post-name}/ URL.
+ * Redirect native case study singles to the shared Case Study Detail page template.
  *
- * Legacy example: /case-study-detail/?post_id=123
- * New canonical:  /case-studies/post-name/
+ * Canonical target: /case-study-detail/?post_id=123
  */
 function craftdigitally_redirect_case_study_detail_page_to_single() {
   if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) {
     return;
   }
 
-  if (!is_page_template('page-templates/page-case-study-detail.php')) {
+  if (!is_singular('case_study')) {
     return;
   }
 
-  $post_id = isset($_GET['post_id']) ? absint($_GET['post_id']) : 0;
+  $post_id = get_queried_object_id();
   if ($post_id <= 0 || get_post_type($post_id) !== 'case_study') {
     return;
   }
@@ -488,7 +502,10 @@ function craftdigitally_redirect_case_study_detail_page_to_single() {
     return;
   }
 
-  $target = get_permalink($post_id);
+  $target = function_exists('craftdigitally_get_case_study_detail_url')
+    ? craftdigitally_get_case_study_detail_url($post_id)
+    : '';
+
   if (!empty($target)) {
     wp_redirect($target, 301);
     exit;

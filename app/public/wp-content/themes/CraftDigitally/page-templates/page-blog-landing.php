@@ -380,29 +380,7 @@ $cd_blog_cta_btn_label = craftdigitally_get_acf('blog_landing_cta_button_label',
     <?php get_template_part('template-parts/sections/testimonial-slider-section'); ?>
 
     <!-- CTA Section -->
-    <section class="cta-section" id="contact">
-      <div class="container">
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_blog_cta_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_blog_cta_subtitle); ?>
-          </p>
-        </div>
-
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_blog_cta_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_blog_cta_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_blog_cta_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_blog_cta_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_blog_cta_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_blog_cta_btn_label); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

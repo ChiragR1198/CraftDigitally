@@ -43,7 +43,9 @@ if ($cd_cs_posts_q->have_posts()) {
   
   $cd_cs_featured_title = craftdigitally_get_acf('cs_hero_title', get_the_title($featured_cs_id), $featured_cs_id);
   $cd_cs_featured_desc = craftdigitally_get_acf('cs_overview', get_the_excerpt($featured_cs_id), $featured_cs_id);
-  $cd_cs_featured_btn_url = get_permalink($featured_cs_id);
+  $cd_cs_featured_btn_url = function_exists('craftdigitally_get_case_study_detail_url')
+    ? craftdigitally_get_case_study_detail_url($featured_cs_id)
+    : get_permalink($featured_cs_id);
   $featured_status = get_post_status($featured_cs_id);
   if ($featured_status && $featured_status !== 'publish') {
     $cd_cs_featured_btn_url = current_user_can('edit_post', $featured_cs_id) ? get_preview_post_link($featured_cs_id) : '#';
@@ -153,7 +155,9 @@ $cd_cs_cta_submit = craftdigitally_get_acf('cs_landing_cta_submit_label', "Let's
                 $cs_logo = $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png');
               }
               
-              $detail_url = get_permalink($cs_id);
+              $detail_url = function_exists('craftdigitally_get_case_study_detail_url')
+                ? craftdigitally_get_case_study_detail_url($cs_id)
+                : get_permalink($cs_id);
               $cs_status = get_post_status($cs_id);
               if ($cs_status && $cs_status !== 'publish') {
                 $detail_url = current_user_can('edit_post', $cs_id) ? get_preview_post_link($cs_id) : '#';
@@ -210,29 +214,7 @@ $cd_cs_cta_submit = craftdigitally_get_acf('cs_landing_cta_submit_label', "Let's
     </div>
 
     <!-- CTA Section -->
-    <section class="cta-section" id="contact">
-      <div class="container">
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_cs_cta_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_cs_cta_subtitle); ?>
-          </p>
-        </div>
-
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_cs_cta_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_cs_cta_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_cs_cta_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_cs_cta_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_cs_cta_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_cs_cta_submit); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

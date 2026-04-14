@@ -83,6 +83,9 @@ if ($cd_bdp_is_post_context) {
   $cd_bdp_featured_img_alt = craftdigitally_get_acf('blog_detail_featured_image_alt', 'Blog Image', $cd_bdp_context_id);
 }
 
+$cd_bdp_share_url = esc_url_raw(get_permalink($cd_bdp_context_id));
+$cd_bdp_share_title = wp_strip_all_tags($cd_bdp_title);
+
 $cd_bdp_toc_default = array(
   array('text' => 'What Is Local SEO?'),
   array('text' => 'Why Local SEO Is Essential in 2025'),
@@ -348,29 +351,12 @@ $cd_bdp_final_html = $cd_bdp_is_post_context
   ? craftdigitally_get_acf('blog_final_html', '', $cd_bdp_context_id)
   : craftdigitally_get_acf('blog_detail_final_html', $cd_bdp_final_html_default, $cd_bdp_context_id);
 
-$cd_bdp_cta_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_cta_title', 'Ready to Dominate Your Competition?', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_cta_title', 'Ready to Dominate Your Competition?', $cd_bdp_context_id);
-$cd_bdp_cta_text = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $cd_bdp_context_id);
-$cd_bdp_cta_btn_label = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_cta_button_label', 'Book a Free Consult', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_cta_button_label', 'Book a Free Consult', $cd_bdp_context_id);
+$cd_bdp_shared_cta = craftdigitally_get_shared_cta_data();
+$cd_bdp_cta_title = $cd_bdp_shared_cta['title'];
+$cd_bdp_cta_text = $cd_bdp_shared_cta['subtitle'];
+$cd_bdp_cta_btn_label = $cd_bdp_shared_cta['button_label'];
 
-$cd_bdp_author_tag = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_author_tag', 'LOCAL SEO EXPERT', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_author_tag', 'LOCAL SEO EXPERT', $cd_bdp_context_id);
-$cd_bdp_author_name_default = $cd_bdp_is_post_context ? get_the_author_meta('display_name', (int) get_post_field('post_author', $cd_bdp_context_id)) : 'Yashasvi Zala';
-$cd_bdp_author_name = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_author_name', $cd_bdp_author_name_default, $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_author_name', $cd_bdp_author_name_default, $cd_bdp_context_id);
-$cd_bdp_author_bio = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_author_bio', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_author_bio', 'Passionate about helping local businesses get discovered, Yashasvi creates simple, effective SEO strategies that increase foot traffic, calls, and online visibility.', $cd_bdp_context_id);
-$cd_bdp_author_social_img = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf_image_url('blog_author_social_image', get_template_directory_uri() . '/assets/images/group-3.png', $cd_bdp_context_id)
-  : craftdigitally_get_acf_image_url('blog_detail_author_social_image', get_template_directory_uri() . '/assets/images/group-3.png', $cd_bdp_context_id);
+$cd_bdp_author_block_prefix = $cd_bdp_is_post_context ? 'blog_' : 'blog_detail_';
 
 // If post content blocks are empty, use the post content as a fallback (keeps UI while making Posts usable immediately).
 if ($cd_bdp_is_post_context) {
@@ -389,6 +375,7 @@ if ($cd_bdp_is_post_context) {
             <a class="bdp-text-wrapper" href="<?php echo esc_url($cd_bdp_back_url); ?>"><?php echo esc_html($cd_bdp_back_label); ?></a>
             <div class="bdp-text-wrapper"><?php echo esc_html($cd_bdp_category); ?></div>
           </div>
+          <hr class="bdp-hero-title-divider" aria-hidden="true" />
           <p class="bdp-div"><?php echo esc_html($cd_bdp_title); ?></p>
         </div>
         <div class="bdp-meta-data">
@@ -407,27 +394,29 @@ if ($cd_bdp_is_post_context) {
             <div class="bdp-text-wrapper-3">Table of Contents</div>
             <div class="bdp-frame-3"></div>
             <div class="bdp-flexcontainer">
-              <ol class="bdp-toc-list" style="padding-left: 20px; margin: 0;">
-                <?php foreach ($cd_bdp_toc as $toc): ?>
-                  <li class="bdp-p"><span class="bdp-span"><?php echo esc_html(isset($toc['text']) ? $toc['text'] : ''); ?></span></li>
+              <ol class="bdp-toc-list">
+                <?php foreach ($cd_bdp_toc as $idx => $toc) : ?>
+                  <li class="bdp-toc-item">
+                    <a class="bdp-toc-link" href="#<?php echo esc_attr(craftdigitally_bdp_toc_section_anchor_id((int) $idx)); ?>"><?php echo esc_html(isset($toc['text']) ? $toc['text'] : ''); ?></a>
+                  </li>
                 <?php endforeach; ?>
               </ol>
             </div>
           </div>
         </div>
-        <div class="bdp-content-2">
+        <div class="bdp-content-2" id="bdp-blog-content">
           <div class="bdp-div-2">
             <p class="bdp-text-wrapper-4">
               <?php echo nl2br(esc_html($cd_bdp_intro)); ?>
             </p>
           </div>
-          <div class="bdp-div-2">
+          <div class="bdp-div-2" id="bdp-section-local-seo">
             <div class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_local_seo_title); ?></div>
             <div class="bdp-flexcontainer-2">
               <?php echo wp_kses_post($cd_bdp_local_seo_html); ?>
             </div>
           </div>
-          <div class="bdp-div-2">
+          <div class="bdp-div-2" id="bdp-section-essential">
             <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_essential_title); ?></p>
             <p class="bdp-p">
               <?php echo esc_html($cd_bdp_essential_intro); ?>
@@ -436,7 +425,7 @@ if ($cd_bdp_is_post_context) {
               <?php echo wp_kses_post($cd_bdp_essential_html); ?>
             </div>
           </div>
-          <div class="bdp-div-2">
+          <div class="bdp-div-2" id="bdp-section-benefits">
             <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_benefits_title); ?></p>
             <div class="bdp-auto">
               <?php echo wp_kses_post($cd_bdp_benefits_html); ?>
@@ -448,14 +437,14 @@ if ($cd_bdp_is_post_context) {
             <?php endif; ?>
           </div>
           <p class="bdp-text-wrapper-8">The client was struggling to attract local customers through online searches</p>
-          <div class="bdp-div-2">
+          <div class="bdp-div-2" id="bdp-section-factors">
             <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_factors_title); ?></p>
             <p class="bdp-p"><?php echo esc_html($cd_bdp_factors_intro); ?></p>
             <div class="bdp-auto-2">
               <?php echo wp_kses_post($cd_bdp_factors_html); ?>
             </div>
           </div>
-          <div class="bdp-div-2">
+          <div class="bdp-div-2" id="bdp-section-improve">
             <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_improve_title); ?></p>
             <div class="bdp-auto-3">
               <?php echo wp_kses_post($cd_bdp_improve_html); ?>
@@ -466,7 +455,7 @@ if ($cd_bdp_is_post_context) {
               <?php echo nl2br(esc_html($cd_bdp_testimonial_quote)); ?>
             </p>
           </div>
-          <div class="bdp-div-3">
+          <div class="bdp-div-3" id="bdp-section-final">
             <div class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_final_title); ?></div>
             <div class="bdp-flexcontainer-8">
               <?php echo wp_kses_post($cd_bdp_final_html); ?>
@@ -485,23 +474,13 @@ if ($cd_bdp_is_post_context) {
             </div>
             <button class="bdp-button"><div class="bdp-text-wrapper-10"><?php echo esc_html($cd_bdp_cta_btn_label); ?></div></button>
           </div>
-          <div class="bdp-cta-2">
-            <div class="bdp-frame-4">
-              <div class="bdp-frame-5"></div>
-              <div class="bdp-frame-wrapper">
-                <div class="bdp-frame-6">
-                  <div class="bdp-div-3">
-                    <div class="bdp-local-SEO-expert"><?php echo esc_html($cd_bdp_author_tag); ?></div>
-                    <div class="bdp-text-wrapper-11"><?php echo esc_html($cd_bdp_author_name); ?></div>
-                    <p class="bdp-text-wrapper-12">
-                      <?php echo esc_html($cd_bdp_author_bio); ?>
-                    </p>
-                    <img class="bdp-group" src="<?php echo esc_url($cd_bdp_author_social_img); ?>" alt="Social Links" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <?php
+          get_template_part(
+            'template-parts/bdp-author-block',
+            null,
+            craftdigitally_bdp_get_author_block_args($cd_bdp_context_id, $cd_bdp_author_block_prefix)
+          );
+          ?>
         </div>
         <div class="bdp-right">
           <div class="bdp-cta-3">
@@ -517,21 +496,16 @@ if ($cd_bdp_is_post_context) {
             </div>
             <button class="bdp-button"><div class="bdp-text-wrapper-10"><?php echo esc_html($cd_bdp_cta_btn_label); ?></div></button>
           </div>
-          <div class="bdp-share">
-            <div class="bdp-text-wrapper-13">Share</div>
-            <div class="bdp-frame-7">
-              <div class="bdp-linkedin">
-                <img class="bdp-social-icons" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/social-icons-1.svg'); ?>" alt="LinkedIn" />
-              </div>
-              <div class="bdp-x">
-                <img class="bdp-social-icons" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/social-icons.svg'); ?>" alt="Twitter/X" />
-              </div>
-              <div class="bdp-facebook">
-                <img class="bdp-social-icons" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/social-icons-2.svg'); ?>" alt="Facebook" />
-              </div>
-              <img class="bdp-facebook-2" src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/facebook.svg'); ?>" alt="Facebook" />
-            </div>
-          </div>
+          <?php
+          get_template_part(
+            'template-parts/bdp-share-social',
+            null,
+            array(
+              'share_url'   => $cd_bdp_share_url,
+              'share_title' => $cd_bdp_share_title,
+            )
+          );
+          ?>
         </div>
       </div>
     </div>
@@ -539,25 +513,21 @@ if ($cd_bdp_is_post_context) {
       <div class="bdp-container-3">
         <div class="bdp-frame-6">
           <div class="bdp-content-3">
-            <p class="bdp-text-wrapper-14">Ready to Dominate Your Competition?</p>
-            <p class="bdp-text-wrapper-15">
-              Craft Digitally transformed our online presence completely. Our website now ranks on the first page
-              for our target keywords, and our business has grown significantly. Their SEO expertise is unmatched in
-              Ahmedabad
-            </p>
+            <p class="bdp-text-wrapper-14"><?php echo esc_html($cd_bdp_shared_cta['title']); ?></p>
+            <p class="bdp-text-wrapper-15"><?php echo esc_html($cd_bdp_shared_cta['subtitle']); ?></p>
           </div>
         </div>
         <div class="bdp-form">
           <div class="bdp-form-2">
             <div class="bdp-frame-8">
-              <input class="bdp-name" placeholder="Name" type="text" id="bdp-input-1" />
-              <div class="bdp-phone"><label class="bdp-label" for="bdp-input-1">Phone</label></div>
+              <input class="bdp-name" placeholder="<?php echo esc_attr($cd_bdp_shared_cta['name_placeholder']); ?>" type="text" id="bdp-input-1" />
+              <div class="bdp-phone"><label class="bdp-label" for="bdp-input-1"><?php echo esc_html($cd_bdp_shared_cta['phone_placeholder']); ?></label></div>
             </div>
-            <input class="bdp-email" placeholder="Email" type="email" />
-            <div class="bdp-service"><div class="bdp-text-wrapper-16">Service</div></div>
-            <div class="bdp-message"><div class="bdp-text-wrapper-16">Message</div></div>
+            <input class="bdp-email" placeholder="<?php echo esc_attr($cd_bdp_shared_cta['email_placeholder']); ?>" type="email" />
+            <div class="bdp-service"><div class="bdp-text-wrapper-16"><?php echo esc_html($cd_bdp_shared_cta['service_placeholder']); ?></div></div>
+            <div class="bdp-message"><div class="bdp-text-wrapper-16"><?php echo esc_html($cd_bdp_shared_cta['message_placeholder']); ?></div></div>
           </div>
-          <button class="bdp-button-2"><div class="bdp-text-wrapper-17">Let's Connect</div></button>
+          <button class="bdp-button-2"><div class="bdp-text-wrapper-17"><?php echo esc_html($cd_bdp_shared_cta['button_label']); ?></div></button>
         </div>
       </div>
     </div>

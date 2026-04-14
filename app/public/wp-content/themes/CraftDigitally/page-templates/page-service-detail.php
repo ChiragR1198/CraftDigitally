@@ -85,11 +85,21 @@ $cd_sd_mid_cta_title = craftdigitally_get_acf('service_mid_cta_title', 'Ready to
 $cd_sd_mid_cta_text = craftdigitally_get_acf('service_mid_cta_text', 'Get a clear local SEO strategy and start turning nearby searches into real customers.', $post_id);
 $cd_sd_mid_cta_btn = craftdigitally_get_acf('service_mid_cta_button_label', 'Book a Free Consult', $post_id);
 
-$cd_sd_results_title = craftdigitally_get_acf('service_results_title', 'Results Our Clients Have Achieved', $post_id);
-$cd_sd_results_subtitle = craftdigitally_get_acf('service_results_subtitle', 'From higher visibility to more traffic and leads, see how our clients turned local search into success.', $post_id);
-$cd_sd_results_count = (int) craftdigitally_get_acf('service_results_count', 6, $post_id);
-$cd_sd_results_read_more = craftdigitally_get_acf('service_results_read_more_label', 'Read Full Story', $post_id);
-$cd_sd_results_view_all = craftdigitally_get_acf('service_results_view_all_label', 'View All Case Studies', $post_id);
+$cd_sd_results_shared = function_exists('craftdigitally_get_shared_case_study_results_data')
+  ? craftdigitally_get_shared_case_study_results_data()
+  : array(
+    'title' => 'Results Our Clients Have Achieved',
+    'subtitle' => "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.",
+    'read_more_label' => 'Read Full Story',
+    'view_all_label' => 'View all Case Studies',
+    'view_all_url' => home_url('/case-studies/'),
+  );
+$cd_sd_results_title = $cd_sd_results_shared['title'];
+$cd_sd_results_subtitle = $cd_sd_results_shared['subtitle'];
+$cd_sd_results_count = 6;
+$cd_sd_results_read_more = $cd_sd_results_shared['read_more_label'];
+$cd_sd_results_view_all = $cd_sd_results_shared['view_all_label'];
+$cd_sd_results_view_all_url = $cd_sd_results_shared['view_all_url'];
 
 // Get Case Study Detail page URL for dynamic linking
 // NOTE:
@@ -238,7 +248,7 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
       <div class="sd-container">
         <div class="sd-section-header sd-section-header--center">
           <h2 class="sd-section-title"><?php echo esc_html($cd_sd_results_title); ?></h2>
-          <p class="sd-section-subtitle"><?php echo esc_html($cd_sd_results_subtitle); ?></p>
+          <p class="sd-section-subtitle"><?php echo wp_kses_post($cd_sd_results_subtitle); ?></p>
         </div>
         <div class="sd-results-grid">
           <?php
@@ -264,7 +274,9 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
                 $cs_logo = $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png');
               }
               
-              $detail_url = get_permalink($cs_id);
+              $detail_url = function_exists('craftdigitally_get_case_study_detail_url')
+                ? craftdigitally_get_case_study_detail_url($cs_id)
+                : get_permalink($cs_id);
               $cs_status = get_post_status($cs_id);
               if ($cs_status && $cs_status !== 'publish') {
                 $detail_url = current_user_can('edit_post', $cs_id) ? get_preview_post_link($cs_id) : '#';
@@ -286,24 +298,12 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
             wp_reset_postdata();
           } else {
             // Fallback to static grid if no posts
-            craftdigitally_render_case_study_grid($cd_sd_results_count ?: 6, 'standard', $cd_sd_results_read_more);
+            craftdigitally_render_case_study_grid($cd_sd_results_count, 'standard', $cd_sd_results_read_more);
           }
           ?>
         </div>
         <div class="sd-results-cta-wrap">
-          <?php
-          // Get case studies landing PAGE URL (we intentionally do not use the CPT archive).
-          $case_studies_landing_pages = get_pages(array(
-            'meta_key' => '_wp_page_template',
-            'meta_value' => 'page-templates/page-case-study-landing.php',
-            'number' => 1,
-            'post_status' => 'publish',
-          ));
-          $case_studies_archive_url = !empty($case_studies_landing_pages)
-            ? get_permalink($case_studies_landing_pages[0]->ID)
-            : home_url('/case-studies/');
-          ?>
-          <a href="<?php echo esc_url($case_studies_archive_url); ?>" class="btn btn-outline sd-results-view-all"><?php echo esc_html($cd_sd_results_view_all); ?></a>
+          <a href="<?php echo esc_url($cd_sd_results_view_all_url); ?>" class="btn btn-outline sd-results-view-all"><?php echo esc_html($cd_sd_results_view_all); ?></a>
         </div>
       </div>
     </section>
@@ -319,6 +319,7 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
           <?php foreach ($cd_sd_services_items as $it): ?>
           <div class="sd-service-item">
               <h3 class="sd-service-item-title"><?php echo esc_html(isset($it['title']) ? $it['title'] : ''); ?></h3>
+              <hr class="service-divider" />
               <p class="sd-service-item-desc"><?php echo esc_html(isset($it['desc']) ? $it['desc'] : ''); ?></p>
           </div>
           <?php endforeach; ?>
@@ -326,9 +327,9 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
       </div>
     </section>
 
-    <!-- Our Proven Process -->
-    <section class="sd-process">
-      <div class="sd-container">
+    <!-- Our Proven Process (same step UI as home; no gradient bg image on this page template) -->
+    <section class="service-detail-process">
+      <div class="container testimonials-container">
         <div class="process-header">
           <h2 class="process-title"><?php echo esc_html($cd_sd_process_title); ?></h2>
           <p class="process-subtitle">
@@ -338,13 +339,16 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
 
         <div class="process-steps">
           <?php foreach ($cd_sd_process_steps as $s): ?>
+            <?php
+              $step_desc = isset($s['description']) ? $s['description'] : (isset($s['desc']) ? $s['desc'] : '');
+            ?>
           <div class="process-step">
-              <div class="process-number"><?php echo esc_html(isset($s['number']) ? $s['number'] : ''); ?></div>
+            <div class="process-number"><?php echo esc_html(isset($s['number']) ? $s['number'] : ''); ?></div>
             <div class="process-content">
-                <h3 class="process-step-title"><?php echo esc_html(isset($s['title']) ? $s['title'] : ''); ?></h3>
-                <p class="process-step-description"><?php echo esc_html(isset($s['description']) ? $s['description'] : ''); ?></p>
-          </div>
+              <h3 class="process-step-title"><?php echo esc_html(isset($s['title']) ? $s['title'] : ''); ?></h3>
+              <p class="process-step-description"><?php echo esc_html($step_desc); ?></p>
             </div>
+          </div>
           <?php endforeach; ?>
         </div>
       </div>
@@ -374,28 +378,7 @@ $cd_sd_cta_submit = craftdigitally_get_acf('service_cta_submit_label', "Let's Co
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section" id="contact">
-      <div class="container">
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_sd_cta_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_sd_cta_subtitle); ?>
-          </p>
-        </div>
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_sd_cta_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_sd_cta_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_sd_cta_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_sd_cta_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_sd_cta_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_sd_cta_submit); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

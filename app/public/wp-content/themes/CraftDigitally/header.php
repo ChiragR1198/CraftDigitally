@@ -44,13 +44,26 @@
           $is_home = is_front_page() || is_home();
           $is_about = is_page('about-us');
           $is_services = is_post_type_archive('service') || is_singular('service') || is_page('services') || is_page('service');
+          $services_landing_url = function_exists('craftdigitally_get_services_landing_url') ? craftdigitally_get_services_landing_url() : home_url('/services/');
+          $services_submenu = function_exists('craftdigitally_get_services_submenu_html') ? craftdigitally_get_services_submenu_html() : '';
+          $services_li_class = 'menu-item';
+          if ($services_submenu !== '') {
+            $services_li_class .= ' menu-item-has-children nav-item-services-dropdown';
+          }
+          if ($is_services) {
+            $services_li_class .= ' current-menu-ancestor';
+          }
           $is_blog = is_page('blog') || is_singular('post');
           $is_contact = is_page('contact');
           echo '<ul class="nav-menu">';
           $home_class = $is_home ? ' class="current-menu-item"' : '';
           echo '<li' . $home_class . '><a href="' . esc_url(home_url('/')) . '">Home</a></li>';
           echo '<li' . ($is_about ? ' class="current-menu-item"' : '') . '><a href="' . esc_url(home_url('/about-us')) . '">About</a></li>';
-          echo '<li' . ($is_services ? ' class="current-menu-item"' : '') . '><a href="' . esc_url(home_url('/services/')) . '">Services</a></li>';
+          echo '<li class="' . esc_attr($services_li_class) . '">';
+          $services_a_extra = $services_submenu !== '' ? ' class="nav-services-trigger" aria-haspopup="true" aria-expanded="false"' : '';
+          echo '<a href="' . esc_url($services_landing_url) . '"' . $services_a_extra . '>Services</a>';
+          echo $services_submenu;
+          echo '</li>';
           echo '<li' . ($is_blog ? ' class="current-menu-item"' : '') . '><a href="' . esc_url(home_url('/blog')) . '">Blog</a></li>';
           echo '<li' . ($is_contact ? ' class="current-menu-item"' : '') . '><a href="' . esc_url(home_url('/contact')) . '">Contact</a></li>';
           echo '</ul>';

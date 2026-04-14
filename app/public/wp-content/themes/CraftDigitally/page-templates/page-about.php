@@ -49,11 +49,21 @@ $cd_about_trust_cards = craftdigitally_get_acf_array('about_trust_cards', array(
   array('icon' => get_template_directory_uri() . '/assets/images/CC.png', 'icon_alt' => '', 'icon_w' => '26', 'icon_h' => '25', 'title' => 'Clear communication', 'desc' => 'Communicating clearly, without hidden tactics or vague promises.'),
 ));
 
-$cd_about_results_title = craftdigitally_get_acf('about_results_title', 'Results Our Clients Have Achieved');
-$cd_about_results_subtitle = craftdigitally_get_acf('about_results_subtitle', "Our SEO strategies are built to compound over time – they drive measurable business outcomes.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.");
-$cd_about_results_count = (int) craftdigitally_get_acf('about_results_count', 6);
-$cd_about_results_read_more_label = craftdigitally_get_acf('about_results_read_more_label', 'Read Full Story');
-$cd_about_results_view_all_label = craftdigitally_get_acf('about_results_view_all_label', 'View all Case Studies');
+$cd_about_results_shared = function_exists('craftdigitally_get_shared_case_study_results_data')
+  ? craftdigitally_get_shared_case_study_results_data()
+  : array(
+    'title' => 'Results Our Clients Have Achieved',
+    'subtitle' => "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.",
+    'read_more_label' => 'Read Full Story',
+    'view_all_label' => 'View all Case Studies',
+    'view_all_url' => home_url('/case-studies/'),
+  );
+$cd_about_results_title = $cd_about_results_shared['title'];
+$cd_about_results_subtitle = $cd_about_results_shared['subtitle'];
+$cd_about_results_count = 6;
+$cd_about_results_read_more_label = $cd_about_results_shared['read_more_label'];
+$cd_about_results_view_all_label = $cd_about_results_shared['view_all_label'];
+$cd_about_results_view_all_url = $cd_about_results_shared['view_all_url'];
 
 $cd_about_values_title = craftdigitally_get_acf('about_values_title', 'Our Values');
 $cd_about_values_items = craftdigitally_get_acf_array('about_values_items', array(
@@ -70,6 +80,13 @@ $cd_about_choose_points = craftdigitally_get_acf_array('about_choose_points', ar
   array('text' => 'Transparent reporting and accountability.'),
   array('text' => 'Long-term focus, not quick hacks.'),
 ));
+
+$cd_about_services_cta_title = 'Discover how we help businesses grow online.';
+$cd_about_services_cta_text = 'Explore our services and see how the right SEO strategy can improve your visibility and attract more customers.';
+$cd_about_services_cta_url = function_exists('craftdigitally_get_services_landing_url')
+  ? craftdigitally_get_services_landing_url()
+  : home_url('/services/');
+$cd_about_services_cta_label = 'Explore Our Services';
 
 $cd_about_mission_title = craftdigitally_get_acf('about_mission_title', 'Our mission');
 $cd_about_mission_desc = craftdigitally_get_acf('about_mission_desc', 'CraftDigitally’s mission is to help businesses grow with clarity-driven marketing, measurable strategy, and consistent execution. We aim to build a digital presence that is easy to understand, trusted by audiences, and strong enough to perform over time.');
@@ -240,15 +257,11 @@ $cd_about_mission_desc = craftdigitally_get_acf('about_mission_desc', 'CraftDigi
         </div>
 
         <div class="case-study-grid">
-          <?php craftdigitally_render_case_study_grid($cd_about_results_count ?: 6, 'standard', $cd_about_results_read_more_label); ?>
+          <?php craftdigitally_render_case_study_grid($cd_about_results_count, 'standard', $cd_about_results_read_more_label); ?>
         </div>
 
         <div class="case-study-view-all">
-          <?php
-          $case_studies_page = get_page_by_path('case-studies');
-          $case_studies_link = $case_studies_page ? get_permalink($case_studies_page) : home_url('/');
-          ?>
-          <a href="<?php echo esc_url($case_studies_link); ?>" class="btn btn-outline case-study-view-all-btn"><?php echo esc_html($cd_about_results_view_all_label); ?></a>
+          <a href="<?php echo esc_url($cd_about_results_view_all_url); ?>" class="btn btn-outline case-study-view-all-btn"><?php echo esc_html($cd_about_results_view_all_label); ?></a>
         </div>
       </div>
     </section>
@@ -288,6 +301,16 @@ $cd_about_mission_desc = craftdigitally_get_acf('about_mission_desc', 'CraftDigi
             </div>
           <?php endforeach; ?>
         </div>
+      </div>
+    </section>
+
+    <section class="sd-mid-cta">
+      <div class="sd-container sd-mid-cta-inner">
+        <div class="sd-mid-cta-content">
+          <h2 class="sd-mid-cta-title"><?php echo esc_html($cd_about_services_cta_title); ?></h2>
+          <p class="sd-mid-cta-text"><?php echo esc_html($cd_about_services_cta_text); ?></p>
+        </div>
+        <a href="<?php echo esc_url($cd_about_services_cta_url); ?>" class="btn btn-outline sd-mid-cta-btn"><?php echo esc_html($cd_about_services_cta_label); ?></a>
       </div>
     </section>
 

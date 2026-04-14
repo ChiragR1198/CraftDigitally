@@ -43,7 +43,7 @@ $cd_sl_service_posts_status = current_user_can('edit_posts')
 $cd_sl_service_posts_q = new WP_Query(array(
   'post_type' => 'service',
   'post_status' => $cd_sl_service_posts_status,
-  'posts_per_page' => 6,
+  'posts_per_page' => -1,
   'ignore_sticky_posts' => true,
   'orderby' => 'date',
   'order' => 'DESC',
@@ -143,15 +143,14 @@ $cd_sl_cta_submit = craftdigitally_get_acf('service_landing_cta_submit_label', "
                   : '#';
               }
               ?>
-              <div class="service-card">
+              <a class="service-card service-card--link" href="<?php echo esc_url($detail_url); ?>">
                 <div class="service-icon-wrapper">
                   <img src="<?php echo esc_url($svc_icon); ?>" alt="<?php echo esc_attr($svc_icon_alt); ?>" class="service-icon" />
                 </div>
                 <h3 class="service-title"><?php echo esc_html($svc_title); ?></h3>
                 <hr class="service-divider" />
                 <p class="service-description"><?php echo esc_html($svc_desc); ?></p>
-                <a href="<?php echo esc_url($detail_url); ?>" class="service-link">Learn More →</a>
-              </div>
+              </a>
               <?php
             }
             wp_reset_postdata();
@@ -164,15 +163,14 @@ $cd_sl_cta_submit = craftdigitally_get_acf('service_landing_cta_submit_label', "
                 elseif (is_numeric($icon)) { $icon = wp_get_attachment_image_url((int) $icon, 'full'); }
                 $icon_alt = isset($card['icon_alt']) ? $card['icon_alt'] : '';
               ?>
-            <div class="service-card">
+            <a class="service-card service-card--link" href="#services">
               <div class="service-icon-wrapper">
                   <img src="<?php echo esc_url($icon); ?>" alt="<?php echo esc_attr($icon_alt); ?>" class="service-icon" />
               </div>
                 <h3 class="service-title"><?php echo esc_html(isset($card['title']) ? $card['title'] : ''); ?></h3>
               <hr class="service-divider" />
                 <p class="service-description"><?php echo esc_html(isset($card['desc']) ? $card['desc'] : ''); ?></p>
-              <!-- <a href="#" class="service-link">Learn More →</a> -->
-              </div>
+              </a>
             <?php endforeach;
           }
           ?>
@@ -184,29 +182,7 @@ $cd_sl_cta_submit = craftdigitally_get_acf('service_landing_cta_submit_label', "
     <?php get_template_part('template-parts/sections/testimonial-slider-section'); ?>
 
     <!-- CTA Section -->
-    <section class="cta-section" id="contact">
-      <div class="container"> 
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_sl_cta_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_sl_cta_subtitle); ?>
-          </p>
-        </div>
-
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_sl_cta_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_sl_cta_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_sl_cta_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_sl_cta_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_sl_cta_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_sl_cta_submit); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

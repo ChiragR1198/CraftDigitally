@@ -35,28 +35,30 @@ $cd_contact_info_hours = craftdigitally_get_acf('contact_info_hours', 'Monday - 
 
 $cd_contact_testimonials_title = craftdigitally_get_acf('contact_testimonials_title', 'What Clients Say About Working With Us');
 $cd_contact_testimonials_subtitle = craftdigitally_get_acf('contact_testimonials_subtitle', 'Discover why clients trust us to handle their SEO campaigns and how our collaboration drives measurable impact.');
-$cd_contact_testimonials_cards = craftdigitally_get_acf_array('contact_testimonials_cards', array(
-  array(
-    'title' => 'CraftDigitally turned what felt complicated into clarity I could finally act on',
-    'quote' => "Before working with CraftDigitally, SEO felt like a fog I couldn't navigate. Their process made everything so clear and actionable. I left with not only a visible online presence but a genuine sense of confidence in how I show up digitally.",
-    'avatar' => get_template_directory_uri() . '/assets/images/sarah-lin.png',
-    'name' => 'Sarah Lin',
-    'role' => 'Brand Strategist, Lin Studio',
-  ),
-  array(
-    'title' => 'They helped me organize the chaos of my online world into something cohesive and professional',
-    'quote' => 'I used to feel scattered across platforms, unsure of what really mattered for visibility. CraftDigitally brought structure, strategy, and calm to my digital presence. Now my website and content actually work together—and I finally feel proud to share them.',
-    'avatar' => get_template_directory_uri() . '/assets/images/marcus-alvarez.png',
-    'name' => 'Marcus Alvarez',
-    'role' => 'Founder, Alvarez Consulting',
-  ),
-));
+$cd_contact_testimonials_desc = craftdigitally_get_acf(
+  'contact_testimonials_description',
+  'Discover why clients trust us to handle their SEO and how our collaboration drives measurable impact.'
+);
+// Same data source as front-page testimonials: first 2 cards only.
+$cd_home_testimonials_default = function_exists('craftdigitally_get_default_testimonials') ? craftdigitally_get_default_testimonials() : array();
+$cd_home_testimonials_full      = craftdigitally_get_acf_array('home_testimonials', $cd_home_testimonials_default);
+$cd_contact_testimonials_cards   = array_slice($cd_home_testimonials_full, 0, 2);
 
-$cd_contact_results_title = craftdigitally_get_acf('contact_results_title', 'Results Our Clients Have Achieved');
-$cd_contact_results_subtitle = craftdigitally_get_acf('contact_results_subtitle', "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.");
-$cd_contact_results_count = (int) craftdigitally_get_acf('contact_results_count', 6);
-$cd_contact_results_read_more = craftdigitally_get_acf('contact_results_read_more_label', 'Read Full Story');
-$cd_contact_results_view_all = craftdigitally_get_acf('contact_results_view_all_label', 'View all Case Studies');
+$cd_contact_results_shared = function_exists('craftdigitally_get_shared_case_study_results_data')
+  ? craftdigitally_get_shared_case_study_results_data()
+  : array(
+    'title' => 'Results Our Clients Have Achieved',
+    'subtitle' => "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.",
+    'read_more_label' => 'Read Full Story',
+    'view_all_label' => 'View all Case Studies',
+    'view_all_url' => home_url('/case-studies/'),
+  );
+$cd_contact_results_title = $cd_contact_results_shared['title'];
+$cd_contact_results_subtitle = $cd_contact_results_shared['subtitle'];
+$cd_contact_results_count = 6;
+$cd_contact_results_read_more = $cd_contact_results_shared['read_more_label'];
+$cd_contact_results_view_all = $cd_contact_results_shared['view_all_label'];
+$cd_contact_results_view_all_url = $cd_contact_results_shared['view_all_url'];
 
 $cd_contact_why_work_title = craftdigitally_get_acf('contact_why_work_title', 'Why Work With Us?');
 $cd_contact_why_work_subtitle = craftdigitally_get_acf('contact_why_work_subtitle', 'We combine expertise, creativity, and dedication to deliver results that matter.');
@@ -139,28 +141,45 @@ $cd_contact_faq_items = craftdigitally_get_acf_array('contact_faq_items', array(
 
             <ul class="contact-info-list">
               <li class="contact-info-item">
-                <span class="contact-info-icon" aria-hidden="true">✉</span>
+                <span class="contact-info-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" focusable="false">
+                    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                  </svg>
+                </span>
                 <div class="contact-info-content">
                   <div class="contact-info-label">Email</div>
                   <a class="contact-info-value" href="mailto:<?php echo esc_attr($cd_contact_info_email); ?>"><?php echo esc_html($cd_contact_info_email); ?></a>
                 </div>
               </li>
               <li class="contact-info-item">
-                <span class="contact-info-icon" aria-hidden="true">☎</span>
+                <span class="contact-info-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" focusable="false">
+                    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                  </svg>
+                </span>
                 <div class="contact-info-content">
                   <div class="contact-info-label">Phone</div>
                   <a class="contact-info-value" href="tel:<?php echo esc_attr(preg_replace('/\s+/', '', $cd_contact_info_phone)); ?>"><?php echo esc_html($cd_contact_info_phone); ?></a>
                 </div>
               </li>
               <li class="contact-info-item">
-                <span class="contact-info-icon" aria-hidden="true">⌂</span>
+                <span class="contact-info-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" focusable="false">
+                    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                  </svg>
+                </span>
                 <div class="contact-info-content">
                   <div class="contact-info-label">Office</div>
                   <div class="contact-info-value"><?php echo esc_html($cd_contact_info_address); ?></div>
                 </div>
               </li>
               <li class="contact-info-item">
-                <span class="contact-info-icon" aria-hidden="true">⏱</span>
+                <span class="contact-info-icon" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" focusable="false">
+                    <path stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5-1.5a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </span>
                 <div class="contact-info-content">
                   <div class="contact-info-label">Business Hours</div>
                   <div class="contact-info-value"><?php echo esc_html($cd_contact_info_hours); ?></div>
@@ -172,30 +191,53 @@ $cd_contact_faq_items = craftdigitally_get_acf_array('contact_faq_items', array(
       </div>
     </section>
 
-    <!-- Testimonials Section (Dark Background) -->
-    <section class="contact-testimonials-section">
-      <div class="container">
-        <div class="contact-testimonials-header">
-          <h2 class="contact-testimonials-title"><?php echo esc_html($cd_contact_testimonials_title); ?></h2>
-          <p class="contact-testimonials-subtitle"><?php echo esc_html($cd_contact_testimonials_subtitle); ?></p>
+    <!-- Testimonials: same markup + classes as front-page (home) -->
+    <section class="testimonials-process-section">
+      <div class="container testimonials-container">
+        <div class="testimonials-header">
+          <h2 class="testimonials-title"><?php echo esc_html($cd_contact_testimonials_title); ?></h2>
+          <p class="testimonials-subtitle"><?php echo esc_html($cd_contact_testimonials_subtitle); ?></p>
+          <p class="testimonials-description"><?php echo esc_html($cd_contact_testimonials_desc); ?></p>
         </div>
-        <div class="contact-testimonials-grid">
-          <?php foreach ($cd_contact_testimonials_cards as $t): ?>
+        <div class="testimonials-grid">
+          <?php foreach ($cd_contact_testimonials_cards as $t) : ?>
             <?php
-              $t_avatar = isset($t['avatar']) ? $t['avatar'] : '';
-              if (is_array($t_avatar) && !empty($t_avatar['url'])) { $t_avatar = $t_avatar['url']; }
-              elseif (is_numeric($t_avatar)) { $t_avatar = wp_get_attachment_image_url((int) $t_avatar, 'full'); }
+              $t_title = isset($t['title']) ? $t['title'] : '';
+              $t_quote = isset($t['quote']) ? $t['quote'] : '';
+              $t_name  = isset($t['name']) ? $t['name'] : '';
+
+              $t_role    = isset($t['role']) ? $t['role'] : (isset($t['title_role']) ? $t['title_role'] : '');
+              $t_company = isset($t['company']) ? $t['company'] : '';
+              $t_role_line = $t_role;
+              if (!empty($t_company)) {
+                $t_role_line = rtrim($t_role_line, ', ');
+                $t_role_line = $t_role_line ? ($t_role_line . ', ' . $t_company) : $t_company;
+              }
+
+              $t_avatar_url = '';
+              if (isset($t['avatar']) && !empty($t['avatar'])) {
+                if (is_array($t['avatar']) && !empty($t['avatar']['url'])) {
+                  $t_avatar_url = $t['avatar']['url'];
+                } elseif (is_numeric($t['avatar'])) {
+                  $t_avatar_url = wp_get_attachment_image_url((int) $t['avatar'], 'full');
+                } elseif (is_string($t['avatar'])) {
+                  $t_avatar_url = $t['avatar'];
+                }
+              }
+              if (empty($t_avatar_url) && isset($t['image']) && !empty($t['image'])) {
+                $t_avatar_url = get_template_directory_uri() . '/assets/images/' . $t['image'];
+              }
             ?>
-          <div class="contact-testimonial-card">
-            <div class="contact-testimonial-content">
-                <p class="contact-testimonial-title"><?php echo esc_html(isset($t['title']) ? $t['title'] : ''); ?></p>
-                <p class="contact-testimonial-quote"><?php echo esc_html(isset($t['quote']) ? $t['quote'] : ''); ?></p>
+          <div class="testimonial-card">
+            <div class="testimonial-content">
+                <p class="testimonial-title"><?php echo esc_html($t_title); ?></p>
+                <p class="testimonial-quote"><?php echo esc_html($t_quote); ?></p>
             </div>
-            <div class="contact-testimonial-author">
-                <img src="<?php echo esc_url($t_avatar); ?>" alt="<?php echo esc_attr(isset($t['name']) ? $t['name'] : ''); ?>" class="contact-testimonial-avatar" />
-              <div class="contact-testimonial-author-info">
-                  <div class="contact-testimonial-name"><?php echo esc_html(isset($t['name']) ? $t['name'] : ''); ?></div>
-                  <div class="contact-testimonial-role"><?php echo esc_html(isset($t['role']) ? $t['role'] : ''); ?></div>
+            <div class="testimonial-author">
+                <img src="<?php echo esc_url($t_avatar_url); ?>" alt="<?php echo esc_attr($t_name); ?>" class="testimonial-avatar" />
+              <div class="testimonial-author-info">
+                  <div class="testimonial-name"><?php echo esc_html($t_name); ?></div>
+                  <div class="testimonial-role"><?php echo esc_html($t_role_line); ?></div>
                 </div>
               </div>
             </div>
@@ -215,15 +257,11 @@ $cd_contact_faq_items = craftdigitally_get_acf_array('contact_faq_items', array(
         </div>
 
         <div class="case-study-grid">
-          <?php craftdigitally_render_case_study_grid($cd_contact_results_count ?: 6, 'standard', $cd_contact_results_read_more); ?>
+          <?php craftdigitally_render_case_study_grid($cd_contact_results_count, 'standard', $cd_contact_results_read_more); ?>
         </div>
 
         <div class="case-study-view-all">
-          <?php
-          $case_studies_page = get_page_by_path('case-studies');
-          $case_studies_link = $case_studies_page ? get_permalink($case_studies_page) : home_url('/');
-          ?>
-          <a href="<?php echo esc_url($case_studies_link); ?>" class="btn btn-outline case-study-view-all-btn"><?php echo esc_html($cd_contact_results_view_all); ?></a>
+          <a href="<?php echo esc_url($cd_contact_results_view_all_url); ?>" class="btn btn-outline case-study-view-all-btn"><?php echo esc_html($cd_contact_results_view_all); ?></a>
         </div>
       </div>
     </section>

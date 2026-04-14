@@ -15,6 +15,7 @@ if (!defined('ABSPATH')) {
 function craftdigitally_scripts() {
   // Google Fonts
   wp_enqueue_style(
+    
     'craftdigitally-fonts',
     'https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,700&family=Mona+Sans:wght@400;500;600&family=Public+Sans:wght@400&display=swap',
     array(),
@@ -22,19 +23,25 @@ function craftdigitally_scripts() {
   );
 
   // Main stylesheet
+  $theme_version = wp_get_theme()->get('Version');
+  $style_path = get_stylesheet_directory() . '/style.css';
+  $style_ver = file_exists($style_path) ? (string) filemtime($style_path) : $theme_version;
   wp_enqueue_style(
     'craftdigitally-style',
     get_stylesheet_uri(),
     array(),
-    wp_get_theme()->get('Version')
+    $style_ver
   );
 
   // Main JavaScript
+  $main_js_rel = '/assets/js/main.js';
+  $main_js_path = get_template_directory() . $main_js_rel;
+  $main_js_ver = file_exists($main_js_path) ? (string) filemtime($main_js_path) : $theme_version;
   wp_enqueue_script(
     'craftdigitally-script',
-    get_template_directory_uri() . '/assets/js/main.js',
+    get_template_directory_uri() . $main_js_rel,
     array(),
-    wp_get_theme()->get('Version'),
+    $main_js_ver,
     true
   );
 

@@ -55,9 +55,10 @@ $cd_csd_outcome_title = craftdigitally_get_acf('cs_outcome_title', 'Outcome', $p
 $cd_csd_outcome_text = craftdigitally_get_acf('cs_outcome_text', '', $post_id);
 $cd_csd_outcome_html = craftdigitally_get_acf('cs_outcome_html', '', $post_id);
 
-$cd_csd_cta_title = craftdigitally_get_acf('cs_cta_title', 'Ready to Dominate Your Competition?', $post_id);
-$cd_csd_cta_text = craftdigitally_get_acf('cs_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $post_id);
-$cd_csd_cta_btn = craftdigitally_get_acf('cs_cta_button_label', 'Book a Free Consult', $post_id);
+$cd_csd_shared_cta = craftdigitally_get_shared_cta_data();
+$cd_csd_cta_title = $cd_csd_shared_cta['title'];
+$cd_csd_cta_text = $cd_csd_shared_cta['subtitle'];
+$cd_csd_cta_btn = $cd_csd_shared_cta['button_label'];
 
 $cd_csd_related_title = craftdigitally_get_acf('cs_related_title', 'Related Case Studies', $post_id);
 $cd_csd_related_subtitle = craftdigitally_get_acf('cs_related_subtitle', "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.", $post_id);
@@ -207,6 +208,7 @@ if (empty($cd_csd_overview) && empty($cd_csd_problem_paras) && empty($cd_csd_sol
           </div>
           <button class="div-wrapper"><div class="text-wrapper-13"><?php echo esc_html($cd_csd_cta_btn); ?></div></button>
         </div>
+        <?php endif; ?>
       </div>
     </div>
 
@@ -246,7 +248,9 @@ if (empty($cd_csd_overview) && empty($cd_csd_problem_paras) && empty($cd_csd_sol
                   $related_id
                 );
                 
-                $related_detail_url = get_permalink($related_id);
+                $related_detail_url = function_exists('craftdigitally_get_case_study_detail_url')
+                  ? craftdigitally_get_case_study_detail_url($related_id)
+                  : get_permalink($related_id);
                 $related_status = get_post_status($related_id);
                 if ($related_status && $related_status !== 'publish') {
                   $related_detail_url = current_user_can('edit_post', $related_id) ? get_preview_post_link($related_id) : '#';
@@ -277,29 +281,7 @@ if (empty($cd_csd_overview) && empty($cd_csd_problem_paras) && empty($cd_csd_sol
     </div>
 
     <!-- CTA Form Section -->
-    <section class="cta-section" id="contact">
-      <div class="container">
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_csd_form_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_csd_form_subtitle); ?>
-          </p>
-        </div>
-
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_csd_form_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_csd_form_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_csd_form_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_csd_form_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_csd_form_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_csd_form_submit); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

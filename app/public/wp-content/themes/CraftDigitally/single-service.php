@@ -67,10 +67,10 @@ $cd_sd_services_items = craftdigitally_get_acf_array('service_services_items', a
 $cd_sd_process_title = craftdigitally_get_acf('service_process_title', 'Our Proven Process', $post_id);
 $cd_sd_process_subtitle = craftdigitally_get_acf('service_process_subtitle', 'From audit to optimization, we follow a clear, repeatable process that delivers results.', $post_id);
 $cd_sd_process_steps = craftdigitally_get_acf_array('service_process_steps', array(
-  array('number' => '1', 'title' => 'SEO Audit & Strategy', 'desc' => 'We review your current presence, competitors, and goals to build a tailored local SEO plan.'),
-  array('number' => '2', 'title' => 'Expert Implementation', 'desc' => 'Our team implements optimisations across your profile, website, and citations with clear ownership and timelines.'),
-  array('number' => '3', 'title' => 'Performance Tracking', 'desc' => 'You get transparent reporting on rankings, traffic, and leads so you always know how you\'re performing.'),
-  array('number' => '4', 'title' => 'Continuous Optimization', 'desc' => 'We keep refining based on data and market changes so your local visibility grows over time.'),
+  array('number' => '1', 'title' => 'SEO Audit & Strategy', 'description' => 'We review your current presence, competitors, and goals to build a tailored local SEO plan.'),
+  array('number' => '2', 'title' => 'Expert Implementation', 'description' => 'Our team implements optimisations across your profile, website, and citations with clear ownership and timelines.'),
+  array('number' => '3', 'title' => 'Performance Tracking', 'description' => 'You get transparent reporting on rankings, traffic, and leads so you always know how you\'re performing.'),
+  array('number' => '4', 'title' => 'Continuous Optimization', 'description' => 'We keep refining based on data and market changes so your local visibility grows over time.'),
 ), $post_id);
 
 $cd_sd_faq_title = craftdigitally_get_acf('service_faq_title', 'FAQs', $post_id);
@@ -165,6 +165,7 @@ if (empty($problem_text) && empty($cd_sd_services_items) && empty($cd_sd_process
             <div class="sd-benefit-card">
               <div class="sd-benefit-icon"><img src="<?php echo esc_url($icon); ?>" alt="" /></div>
               <h3 class="sd-benefit-title"><?php echo esc_html(isset($b['title']) ? $b['title'] : ''); ?></h3>
+              <hr class="service-divider" />
               <p class="sd-benefit-desc"><?php echo esc_html(isset($b['desc']) ? $b['desc'] : ''); ?></p>
             </div>
           <?php endforeach; ?>
@@ -220,6 +221,7 @@ if (empty($problem_text) && empty($cd_sd_services_items) && empty($cd_sd_process
           <?php foreach ($cd_sd_services_items as $it): ?>
             <div class="sd-service-item">
               <h3 class="sd-service-item-title"><?php echo esc_html(isset($it['title']) ? $it['title'] : ''); ?></h3>
+              <hr class="service-divider" />
               <p class="sd-service-item-desc"><?php echo esc_html(isset($it['desc']) ? $it['desc'] : ''); ?></p>
             </div>
           <?php endforeach; ?>
@@ -228,23 +230,29 @@ if (empty($problem_text) && empty($cd_sd_services_items) && empty($cd_sd_process
     </section>
     <?php endif; ?>
 
-    <!-- Our Proven Process -->
+    <!-- Our Proven Process (same step UI as home; no gradient bg image) -->
     <?php if (!empty($cd_sd_process_title) || !empty($cd_sd_process_steps)): ?>
-    <section class="sd-process">
-      <div class="sd-container">
-        <div class="sd-section-header sd-section-header--center">
-          <h2 class="sd-section-title"><?php echo esc_html($cd_sd_process_title); ?></h2>
-          <p class="sd-section-subtitle"><?php echo esc_html($cd_sd_process_subtitle); ?></p>
+    <section class="service-detail-process">
+      <div class="container testimonials-container">
+        <div class="process-header">
+          <h2 class="process-title"><?php echo esc_html($cd_sd_process_title); ?></h2>
+          <p class="process-subtitle">
+            <?php echo esc_html($cd_sd_process_subtitle); ?>
+          </p>
         </div>
-        <div class="sd-process-list">
+
+        <div class="process-steps">
           <?php foreach ($cd_sd_process_steps as $s): ?>
-            <div class="sd-process-step">
-              <span class="sd-process-num"><?php echo esc_html(isset($s['number']) ? $s['number'] : ''); ?></span>
-              <div class="sd-process-content">
-                <h3 class="sd-process-title"><?php echo esc_html(isset($s['title']) ? $s['title'] : ''); ?></h3>
-                <p class="sd-process-desc"><?php echo esc_html(isset($s['desc']) ? $s['desc'] : ''); ?></p>
-              </div>
+            <?php
+              $step_desc = isset($s['description']) ? $s['description'] : (isset($s['desc']) ? $s['desc'] : '');
+            ?>
+          <div class="process-step">
+            <div class="process-number"><?php echo esc_html(isset($s['number']) ? $s['number'] : ''); ?></div>
+            <div class="process-content">
+              <h3 class="process-step-title"><?php echo esc_html(isset($s['title']) ? $s['title'] : ''); ?></h3>
+              <p class="process-step-description"><?php echo esc_html($step_desc); ?></p>
             </div>
+          </div>
           <?php endforeach; ?>
         </div>
       </div>
@@ -277,30 +285,7 @@ if (empty($problem_text) && empty($cd_sd_services_items) && empty($cd_sd_process
     <?php endif; ?>
 
     <!-- CTA Section -->
-    <?php if (!empty($cd_sd_cta_title)): ?>
-    <section class="cta-section" id="contact">
-      <div class="container">
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_sd_cta_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_sd_cta_subtitle); ?>
-          </p>
-        </div>
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_sd_cta_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_sd_cta_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_sd_cta_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_sd_cta_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_sd_cta_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_sd_cta_submit); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
-    <?php endif; ?>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

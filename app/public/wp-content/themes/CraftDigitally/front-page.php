@@ -13,21 +13,30 @@ $cd_home_hero_subtitle = craftdigitally_get_acf('home_hero_subtitle', "We're a l
 $cd_home_hero_cta_label = craftdigitally_get_acf('home_hero_cta_label', 'Book a Free Consult');
 $cd_home_hero_cta_link = craftdigitally_get_acf('home_hero_cta_link', '#contact');
 
-$cd_home_cs_title = craftdigitally_get_acf('home_case_studies_title', 'Results Our Clients Have Achieved');
-$cd_home_cs_subtitle = craftdigitally_get_acf('home_case_studies_subtitle', "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.");
-$cd_home_cs_count = (int) craftdigitally_get_acf('home_case_studies_count', 6);
-$cd_home_cs_view_all_label = craftdigitally_get_acf('home_case_studies_view_all_label', 'View all Case Studies');
-// Default URL to case studies landing PAGE (we intentionally do not use the CPT archive).
-$cd_home_cs_landing_pages = get_pages(array(
+// Pull Services section content from the Services landing page template when available.
+$cd_home_service_landing_pages = get_pages(array(
   'meta_key' => '_wp_page_template',
-  'meta_value' => 'page-templates/page-case-study-landing.php',
+  'meta_value' => 'page-templates/page-service-landing.php',
   'number' => 1,
   'post_status' => 'publish',
 ));
-$cd_home_cs_view_all_url_default = !empty($cd_home_cs_landing_pages)
-  ? get_permalink($cd_home_cs_landing_pages[0]->ID)
-  : (get_page_by_path('case-studies') ? get_permalink(get_page_by_path('case-studies')->ID) : home_url('/case-studies/'));
-$cd_home_cs_view_all_url = craftdigitally_get_acf('home_case_studies_view_all_url', $cd_home_cs_view_all_url_default);
+$cd_home_service_landing_id = !empty($cd_home_service_landing_pages) ? $cd_home_service_landing_pages[0]->ID : false;
+
+$cd_home_cs_shared = function_exists('craftdigitally_get_shared_case_study_results_data')
+  ? craftdigitally_get_shared_case_study_results_data()
+  : array(
+    'title' => 'Results Our Clients Have Achieved',
+    'subtitle' => "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.",
+    'read_more_label' => 'Read Full Story',
+    'view_all_label' => 'View all Case Studies',
+    'view_all_url' => home_url('/case-studies/'),
+  );
+$cd_home_cs_title = $cd_home_cs_shared['title'];
+$cd_home_cs_subtitle = $cd_home_cs_shared['subtitle'];
+$cd_home_cs_count = 6;
+$cd_home_cs_read_more = $cd_home_cs_shared['read_more_label'];
+$cd_home_cs_view_all_label = $cd_home_cs_shared['view_all_label'];
+$cd_home_cs_view_all_url = $cd_home_cs_shared['view_all_url'];
 
 // NOTE:
 // Case studies should use their native permalinks:
@@ -57,10 +66,29 @@ $cd_home_process_subtitle = craftdigitally_get_acf('home_process_subtitle', 'A c
 $cd_home_process_default = function_exists('craftdigitally_get_default_process_steps') ? craftdigitally_get_default_process_steps() : array();
 $cd_home_process_steps = craftdigitally_get_acf_array('home_process_steps', $cd_home_process_default);
 
-$cd_home_services_title = craftdigitally_get_acf('home_services_title', 'Our Services');
-$cd_home_services_subtitle = craftdigitally_get_acf('home_services_subtitle', "Whether you're a startup in Chandkheda or an established brand in Prahladnagar, we've got your back. Your Roadmap to More Traffic, Leads & Sales");
-$cd_home_services_default = function_exists('craftdigitally_get_default_services') ? craftdigitally_get_default_services() : array();
-$cd_home_services = craftdigitally_get_acf_array('home_services', $cd_home_services_default);
+$cd_home_services_title = craftdigitally_get_acf('service_landing_services_title', 'Our Services', $cd_home_service_landing_id);
+$cd_home_services_subtitle = craftdigitally_get_acf('service_landing_services_subtitle', "Whether you're a startup in Chandkheda or an established brand in Prahladnagar, we've got your back. Your Roadmap to More Traffic, Leads & Sales", $cd_home_service_landing_id);
+$cd_home_services_default = craftdigitally_get_acf_array('service_landing_services_cards', array(
+  array('icon' => get_template_directory_uri() . '/assets/images/local-seo.png', 'icon_alt' => 'Local SEO icon', 'title' => 'Local SEO', 'desc' => 'Turn your local presence into lasting visibility. Align your listings, keywords, and on-page SEO so your business becomes the clear choice in your area.'),
+  array('icon' => get_template_directory_uri() . '/assets/images/link-building.png', 'icon_alt' => 'Link Building icon', 'title' => 'Link Building', 'desc' => 'Build trust and authority with ethical, high-quality backlinks that strengthen your rankings and position your brand as a credible voice in your industry.'),
+  array('icon' => get_template_directory_uri() . '/assets/images/emommerce-seo.png', 'icon_alt' => 'Ecommerce SEO icon', 'title' => 'Ecommerce SEO', 'desc' => "Make your products easy to find and effortless to buy. Optimise your store's structure, speed, and search visibility for better reach and higher conversions."),
+  array('icon' => get_template_directory_uri() . '/assets/images/international-seo.png', 'icon_alt' => 'International SEO icon', 'title' => 'International SEO', 'desc' => 'Expand your reach across borders with tailored multilingual and regional strategies that make your brand visible - and relevant - worldwide.'),
+  array('icon' => get_template_directory_uri() . '/assets/images/small-business-seo.png', 'icon_alt' => 'Small Business SEO icon', 'title' => 'Small Business SEO', 'desc' => 'Simplify growth with SEO built for your scale – clear, focused strategies that make your website a steady source of visibility and leads.'),
+  array('icon' => get_template_directory_uri() . '/assets/images/social-media-services.png', 'icon_alt' => 'Social Media Services icon', 'title' => 'Social Media Services', 'desc' => 'Create connection through clarity – we craft consistent, on-brand social content that strengthens visibility, trust, and engagement across every platform.'),
+), $cd_home_service_landing_id);
+
+$cd_home_service_posts_status = current_user_can('edit_posts')
+  ? array('publish', 'draft', 'pending', 'future', 'private')
+  : array('publish');
+
+$cd_home_service_posts_q = new WP_Query(array(
+  'post_type' => 'service',
+  'post_status' => $cd_home_service_posts_status,
+  'posts_per_page' => 6,
+  'ignore_sticky_posts' => true,
+  'orderby' => 'date',
+  'order' => 'DESC',
+));
 
 $cd_home_why_choose_title = craftdigitally_get_acf('home_why_choose_title', 'Why Choose Craft Digitally?');
 $cd_home_why_choose_text = craftdigitally_get_acf('home_why_choose_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords, and our business has grown significantly. Their SEO expertise is unmatched in Ahmedabad.');
@@ -80,7 +108,7 @@ $cd_home_cta_message_ph = craftdigitally_get_acf('home_cta_message_placeholder',
 $cd_home_cta_btn_label = craftdigitally_get_acf('home_cta_button_label', "Let's Connect");
 ?>
 
-<main id="main-content">
+<main id="main-content" class="home-page">
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="container hero-container">
@@ -90,73 +118,6 @@ $cd_home_cta_btn_label = craftdigitally_get_acf('home_cta_button_label', "Let's 
           <?php echo esc_html($cd_home_hero_subtitle); ?>
         </p>
         <a href="<?php echo esc_url($cd_home_hero_cta_link); ?>" class="btn btn-outline"><?php echo esc_html($cd_home_hero_cta_label); ?></a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Case Study Section -->
-  <section class="case-study-section">
-    <div class="container">
-      <div class="case-study-header">
-        <h2 class="case-study-title"><?php echo esc_html($cd_home_cs_title); ?></h2>
-        <p class="case-study-subtitle">
-          <?php echo wp_kses_post($cd_home_cs_subtitle); ?>
-        </p>
-      </div>
-
-      <div class="case-study-grid">
-        <?php
-        // Display dynamic case studies from custom post type
-        if ($cd_home_cs_posts_q->have_posts()) {
-          while ($cd_home_cs_posts_q->have_posts()) {
-            $cd_home_cs_posts_q->the_post();
-            $cs_id = get_the_ID();
-            $cs_title = get_the_title();
-            $cs_overview = craftdigitally_get_acf('cs_overview', get_the_excerpt(), $cs_id);
-            $cs_company = craftdigitally_get_acf('cs_company_name', $cs_title, $cs_id);
-            $cs_category = craftdigitally_get_acf('cs_industry', $cs_company, $cs_id);
-            
-            // Get logo from ACF field (prioritize ACF, then featured image, then default)
-            $thumb_url = get_the_post_thumbnail_url($cs_id, 'medium');
-            $cs_logo = craftdigitally_get_acf_image_url(
-              'cs_hero_logo',
-              $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png'),
-              $cs_id
-            );
-            // Ensure we have a valid image URL
-            if (empty($cs_logo) || $cs_logo === (get_template_directory_uri() . '/assets/images/testeracademy.png')) {
-              $cs_logo = $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png');
-            }
-            
-            $detail_url = get_permalink($cs_id);
-            $cs_status = get_post_status($cs_id);
-            if ($cs_status && $cs_status !== 'publish') {
-              $detail_url = current_user_can('edit_post', $cs_id) ? get_preview_post_link($cs_id) : '#';
-            }
-            ?>
-            <div class="case-study-card">
-              <div class="case-study-image-wrapper">
-                <img src="<?php echo esc_url($cs_logo); ?>" alt="<?php echo esc_attr($cs_company); ?> logo" class="case-study-logo" />
-              </div>
-              <div class="case-study-meta">
-                <span class="case-study-category"><?php echo esc_html($cs_category); ?></span>
-                <hr class="case-study-divider" />
-              </div>
-              <p class="case-study-description"><?php echo esc_html($cs_overview); ?></p>
-              <a href="<?php echo esc_url($detail_url); ?>" class="btn btn-outline case-study-cta">Read Full Story</a>
-            </div>
-            <?php
-          }
-          wp_reset_postdata();
-        } else {
-          // Fallback to static grid if no posts
-          craftdigitally_render_case_study_grid($cd_home_cs_count ?: 6, 'standard', 'Read Full Story');
-        }
-        ?>
-      </div>
-
-      <div class="case-study-view-all">
-        <a href="<?php echo esc_url($cd_home_cs_view_all_url); ?>" class="btn btn-outline case-study-view-all-btn"><?php echo esc_html($cd_home_cs_view_all_label); ?></a>
       </div>
     </div>
   </section>
@@ -242,6 +203,75 @@ $cd_home_cta_btn_label = craftdigitally_get_acf('home_cta_button_label', "Let's 
     </div>
   </section>
 
+  <!-- Case Study Section -->
+  <section class="case-study-section">
+    <div class="container">
+      <div class="case-study-header">
+        <h2 class="case-study-title"><?php echo esc_html($cd_home_cs_title); ?></h2>
+        <p class="case-study-subtitle">
+          <?php echo wp_kses_post($cd_home_cs_subtitle); ?>
+        </p>
+      </div>
+
+      <div class="case-study-grid">
+        <?php
+        // Display dynamic case studies from custom post type
+        if ($cd_home_cs_posts_q->have_posts()) {
+          while ($cd_home_cs_posts_q->have_posts()) {
+            $cd_home_cs_posts_q->the_post();
+            $cs_id = get_the_ID();
+            $cs_title = get_the_title();
+            $cs_overview = craftdigitally_get_acf('cs_overview', get_the_excerpt(), $cs_id);
+            $cs_company = craftdigitally_get_acf('cs_company_name', $cs_title, $cs_id);
+            $cs_category = craftdigitally_get_acf('cs_industry', $cs_company, $cs_id);
+            
+            // Get logo from ACF field (prioritize ACF, then featured image, then default)
+            $thumb_url = get_the_post_thumbnail_url($cs_id, 'medium');
+            $cs_logo = craftdigitally_get_acf_image_url(
+              'cs_hero_logo',
+              $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png'),
+              $cs_id
+            );
+            // Ensure we have a valid image URL
+            if (empty($cs_logo) || $cs_logo === (get_template_directory_uri() . '/assets/images/testeracademy.png')) {
+              $cs_logo = $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png');
+            }
+            
+            $detail_url = function_exists('craftdigitally_get_case_study_detail_url')
+              ? craftdigitally_get_case_study_detail_url($cs_id)
+              : get_permalink($cs_id);
+            $cs_status = get_post_status($cs_id);
+            if ($cs_status && $cs_status !== 'publish') {
+              $detail_url = current_user_can('edit_post', $cs_id) ? get_preview_post_link($cs_id) : '#';
+            }
+            ?>
+            <div class="case-study-card">
+              <div class="case-study-image-wrapper">
+                <img src="<?php echo esc_url($cs_logo); ?>" alt="<?php echo esc_attr($cs_company); ?> logo" class="case-study-logo" />
+              </div>
+              <div class="case-study-meta">
+                <span class="case-study-category"><?php echo esc_html($cs_category); ?></span>
+                <hr class="case-study-divider" />
+              </div>
+              <p class="case-study-description"><?php echo esc_html($cs_overview); ?></p>
+              <a href="<?php echo esc_url($detail_url); ?>" class="btn btn-outline case-study-cta"><?php echo esc_html($cd_home_cs_read_more); ?></a>
+            </div>
+            <?php
+          }
+          wp_reset_postdata();
+        } else {
+          // Fallback to static grid if no posts
+          craftdigitally_render_case_study_grid($cd_home_cs_count, 'standard', $cd_home_cs_read_more);
+        }
+        ?>
+      </div>
+
+      <div class="case-study-view-all">
+        <a href="<?php echo esc_url($cd_home_cs_view_all_url); ?>" class="btn btn-outline case-study-view-all-btn"><?php echo esc_html($cd_home_cs_view_all_label); ?></a>
+      </div>
+    </div>
+  </section>
+  
   <!-- Services Section -->
   <section class="services-section">
     <div class="container">
@@ -253,35 +283,66 @@ $cd_home_cta_btn_label = craftdigitally_get_acf('home_cta_button_label', "Let's 
       </div>
 
       <div class="services-grid">
-        <?php foreach ($cd_home_services as $svc): ?>
-          <?php
-            $svc_title = isset($svc['title']) ? $svc['title'] : '';
-            $svc_desc = isset($svc['description']) ? $svc['description'] : '';
-            $svc_icon_url = '';
-            $svc_icon_alt = $svc_title ? ($svc_title . ' icon') : 'Service icon';
+        <?php
+        if ($cd_home_service_posts_q->have_posts()) {
+          while ($cd_home_service_posts_q->have_posts()) {
+            $cd_home_service_posts_q->the_post();
+            $svc_id = get_the_ID();
+            $svc_title = get_the_title();
+            $svc_desc = craftdigitally_get_acf('service_short_desc', get_the_excerpt(), $svc_id);
 
-            if (isset($svc['icon']) && !empty($svc['icon'])) {
-              if (is_array($svc['icon']) && !empty($svc['icon']['url'])) {
-                $svc_icon_url = $svc['icon']['url'];
-              } elseif (is_numeric($svc['icon'])) {
-                $svc_icon_url = wp_get_attachment_image_url((int) $svc['icon'], 'full');
-              } elseif (is_string($svc['icon'])) {
-                // Default-data provides a filename; ACF might provide a URL.
-                $svc_icon_url = (strpos($svc['icon'], 'http') === 0)
-                  ? $svc['icon']
-                  : (get_template_directory_uri() . '/assets/images/' . $svc['icon']);
-              }
+            $thumb_url = get_the_post_thumbnail_url($svc_id, 'medium');
+            $svc_icon = craftdigitally_get_acf_image_url(
+              'service_icon',
+              $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/local-seo.png'),
+              $svc_id
+            );
+            if (empty($svc_icon) || $svc_icon === (get_template_directory_uri() . '/assets/images/local-seo.png')) {
+              $svc_icon = $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/local-seo.png');
             }
-          ?>
-        <div class="service-card">
-          <div class="service-icon-wrapper">
-              <img src="<?php echo esc_url($svc_icon_url); ?>" alt="<?php echo esc_attr($svc_icon_alt); ?>" class="service-icon" />
-          </div>
-            <h3 class="service-title"><?php echo esc_html($svc_title); ?></h3>
-          <hr class="service-divider" />
-            <p class="service-description"><?php echo esc_html($svc_desc); ?></p>
-          </div>
-        <?php endforeach; ?>
+
+            $svc_icon_alt = craftdigitally_get_acf('service_icon_alt', $svc_title . ' icon', $svc_id);
+            $detail_url = get_permalink($svc_id);
+            $svc_status = get_post_status($svc_id);
+            if ($svc_status && $svc_status !== 'publish') {
+              $detail_url = current_user_can('edit_post', $svc_id)
+                ? get_preview_post_link($svc_id)
+                : '#';
+            }
+            ?>
+            <a class="service-card service-card--link" href="<?php echo esc_url($detail_url); ?>">
+              <div class="service-icon-wrapper">
+                <img src="<?php echo esc_url($svc_icon); ?>" alt="<?php echo esc_attr($svc_icon_alt); ?>" class="service-icon" />
+              </div>
+              <h3 class="service-title"><?php echo esc_html($svc_title); ?></h3>
+              <hr class="service-divider" />
+              <p class="service-description"><?php echo esc_html($svc_desc); ?></p>
+            </a>
+            <?php
+          }
+          wp_reset_postdata();
+        } else {
+          foreach ($cd_home_services_default as $card) :
+            $icon = isset($card['icon']) ? $card['icon'] : '';
+            if (is_array($icon) && !empty($icon['url'])) {
+              $icon = $icon['url'];
+            } elseif (is_numeric($icon)) {
+              $icon = wp_get_attachment_image_url((int) $icon, 'full');
+            }
+            $icon_alt = isset($card['icon_alt']) ? $card['icon_alt'] : '';
+            ?>
+            <a class="service-card service-card--link" href="#services">
+              <div class="service-icon-wrapper">
+                <img src="<?php echo esc_url($icon); ?>" alt="<?php echo esc_attr($icon_alt); ?>" class="service-icon" />
+              </div>
+              <h3 class="service-title"><?php echo esc_html(isset($card['title']) ? $card['title'] : ''); ?></h3>
+              <hr class="service-divider" />
+              <p class="service-description"><?php echo esc_html(isset($card['desc']) ? $card['desc'] : ''); ?></p>
+            </a>
+          <?php
+          endforeach;
+        }
+        ?>
       </div>
     </div>
   </section>
@@ -306,29 +367,7 @@ $cd_home_cta_btn_label = craftdigitally_get_acf('home_cta_button_label', "Let's 
   </section>
 
   <!-- CTA Section -->
-  <section class="cta-section" id="contact">
-    <div class="container">
-      <div class="cta-header">
-        <h2 class="cta-title"><?php echo esc_html($cd_home_cta_title); ?></h2>
-        <p class="cta-subtitle">
-          <?php echo esc_html($cd_home_cta_subtitle); ?>
-        </p>
-      </div>
-
-      <div class="cta-form-wrapper">
-        <form method="post" action="#" class="cta-form">
-          <div class="cta-form-row">
-            <input type="text" name="name" placeholder="<?php echo esc_attr($cd_home_cta_name_ph); ?>" required class="cta-input" />
-            <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_home_cta_phone_ph); ?>" required class="cta-input" />
-          </div>
-          <input type="email" name="email" placeholder="<?php echo esc_attr($cd_home_cta_email_ph); ?>" required class="cta-input" />
-          <input type="text" name="service" placeholder="<?php echo esc_attr($cd_home_cta_service_ph); ?>" class="cta-input" />
-          <textarea name="message" placeholder="<?php echo esc_attr($cd_home_cta_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-          <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_home_cta_btn_label); ?></button>
-        </form>
-      </div>
-    </div>
-  </section>
+  <?php craftdigitally_render_shared_cta_section(); ?>
 </main>
 
 <?php

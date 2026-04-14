@@ -190,15 +190,10 @@ $cd_csd_outcome_html = $cd_csd_is_post_context
   ? craftdigitally_get_acf('cs_outcome_html', $cd_csd_outcome_html_default, $post_id)
   : craftdigitally_get_acf('cs_detail_outcome_html', $cd_csd_outcome_html_default, $post_id);
 
-$cd_csd_cta_title = $cd_csd_is_post_context
-  ? craftdigitally_get_acf('cs_cta_title', 'Ready to Dominate Your Competition?', $post_id)
-  : craftdigitally_get_acf('cs_detail_cta_title', 'Ready to Dominate Your Competition?', $post_id);
-$cd_csd_cta_text = $cd_csd_is_post_context
-  ? craftdigitally_get_acf('cs_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $post_id)
-  : craftdigitally_get_acf('cs_detail_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $post_id);
-$cd_csd_cta_btn = $cd_csd_is_post_context
-  ? craftdigitally_get_acf('cs_cta_button_label', 'Book a Free Consult', $post_id)
-  : craftdigitally_get_acf('cs_detail_cta_button_label', 'Book a Free Consult', $post_id);
+$cd_csd_shared_cta = craftdigitally_get_shared_cta_data();
+$cd_csd_cta_title = $cd_csd_shared_cta['title'];
+$cd_csd_cta_text = $cd_csd_shared_cta['subtitle'];
+$cd_csd_cta_btn = $cd_csd_shared_cta['button_label'];
 
 $cd_csd_related_title = $cd_csd_is_post_context
   ? craftdigitally_get_acf('cs_related_title', 'Related Case Studies', $post_id)
@@ -206,9 +201,7 @@ $cd_csd_related_title = $cd_csd_is_post_context
 $cd_csd_related_subtitle = $cd_csd_is_post_context
   ? craftdigitally_get_acf('cs_related_subtitle', "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.", $post_id)
   : craftdigitally_get_acf('cs_detail_related_subtitle', "Our SEO strategies go beyond rankings — they deliver measurable business growth.<br />From higher visibility to increased traffic and leads, see how our clients turned searches into success.", $post_id);
-$cd_csd_related_count = (int) ($cd_csd_is_post_context
-  ? craftdigitally_get_acf('cs_related_count', 3, $post_id)
-  : craftdigitally_get_acf('cs_detail_related_count', 3, $post_id));
+$cd_csd_related_count = 3;
 $cd_csd_related_read_more = $cd_csd_is_post_context
   ? craftdigitally_get_acf('cs_related_read_more_label', 'Read Full Story', $post_id)
   : craftdigitally_get_acf('cs_detail_related_read_more_label', 'Read Full Story', $post_id);
@@ -328,13 +321,13 @@ $cd_csd_form_submit = $cd_csd_is_post_context
         </div>
 
         <!-- Testimonial Section -->
-        <div class="testimonial-card">
+        <div class="testimonial-card case-detail">
           <p class="text-wrapper-9">
             <?php echo esc_html($cd_csd_test_quote); ?>
           </p>
           <div class="avatar-company">
             <img class="avatar" src="<?php echo esc_url($cd_csd_test_avatar); ?>" alt="<?php echo esc_attr($cd_csd_test_name); ?>" />
-            <div class="frame">
+            <div class="frame"> 
               <div class="text-wrapper-10"><?php echo esc_html($cd_csd_test_name); ?></div>
               <div class="text-wrapper-11"><?php echo esc_html($cd_csd_test_role); ?></div>
             </div>
@@ -384,11 +377,12 @@ $cd_csd_form_submit = $cd_csd_is_post_context
             // Get related case studies (excluding current)
             $related_args = array(
               'post_type' => 'case_study',
-              'posts_per_page' => $cd_csd_related_count ?: 3,
+              'posts_per_page' => $cd_csd_related_count,
               'post__not_in' => $cd_csd_is_post_context ? array($cd_csd_post_id) : array(),
               'orderby' => 'rand',
             );
             $related_query = new WP_Query($related_args);
+            $related_displayed = 0;
             if ($related_query->have_posts()) {
               while ($related_query->have_posts()) {
                 $related_query->the_post();
@@ -410,7 +404,9 @@ $cd_csd_form_submit = $cd_csd_is_post_context
                   $related_logo = $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/testeracademy.png');
                 }
                 
-                $related_detail_url = get_permalink($related_id);
+                $related_detail_url = function_exists('craftdigitally_get_case_study_detail_url')
+                  ? craftdigitally_get_case_study_detail_url($related_id)
+                  : get_permalink($related_id);
                 $related_status = get_post_status($related_id);
                 if ($related_status && $related_status !== 'publish') {
                   $related_detail_url = current_user_can('edit_post', $related_id) ? get_preview_post_link($related_id) : '#';
@@ -428,11 +424,42 @@ $cd_csd_form_submit = $cd_csd_is_post_context
                   <a href="<?php echo esc_url($related_detail_url); ?>" class="btn btn-outline case-study-cta"><?php echo esc_html($cd_csd_related_read_more); ?></a>
                 </div>
                 <?php
+                $related_displayed++;
               }
               wp_reset_postdata();
-            } else {
-              // Fallback to static grid if no related posts
-              craftdigitally_render_case_study_grid($cd_csd_related_count ?: 3, 'standard', $cd_csd_related_read_more);
+            }
+
+            // If there are fewer than 3 live related posts, fill the remaining slots
+            // with the default case study cards so the section always shows 3 boxes.
+            if ($related_displayed < $cd_csd_related_count) {
+              $fallback_case_studies = function_exists('craftdigitally_get_case_studies')
+                ? craftdigitally_get_case_studies($cd_csd_related_count)
+                : array();
+
+              if (!empty($fallback_case_studies)) {
+                $fallback_needed = $cd_csd_related_count - $related_displayed;
+                $fallback_case_studies = array_slice($fallback_case_studies, 0, $fallback_needed);
+
+                foreach ($fallback_case_studies as $fallback_study) :
+                  $fallback_logo = isset($fallback_study['logo']) ? $fallback_study['logo'] : '';
+                  $fallback_category = isset($fallback_study['category']) ? $fallback_study['category'] : '';
+                  $fallback_description = isset($fallback_study['description']) ? $fallback_study['description'] : '';
+                  $fallback_link = isset($fallback_study['link']) ? $fallback_study['link'] : '#';
+                  ?>
+                  <div class="case-study-card">
+                    <div class="case-study-image-wrapper">
+                      <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/' . rawurlencode($fallback_logo)); ?>" alt="<?php echo esc_attr($fallback_category); ?> logo" class="case-study-logo" />
+                    </div>
+                    <div class="case-study-meta">
+                      <span class="case-study-category"><?php echo esc_html($fallback_category); ?></span>
+                      <hr class="case-study-divider" />
+                    </div>
+                    <p class="case-study-description"><?php echo esc_html($fallback_description); ?></p>
+                    <a href="<?php echo esc_url($fallback_link); ?>" class="btn btn-outline case-study-cta"><?php echo esc_html($cd_csd_related_read_more); ?></a>
+                  </div>
+                  <?php
+                endforeach;
+              }
             }
             ?>
           </div>
@@ -441,29 +468,7 @@ $cd_csd_form_submit = $cd_csd_is_post_context
     </div>
 
     <!-- CTA Form Section -->
-    <section class="cta-section" id="contact">
-      <div class="container">
-        <div class="cta-header">
-          <h2 class="cta-title"><?php echo esc_html($cd_csd_form_title); ?></h2>
-          <p class="cta-subtitle">
-            <?php echo esc_html($cd_csd_form_subtitle); ?>
-          </p>
-        </div>
-
-        <div class="cta-form-wrapper">
-          <form method="post" action="#" class="cta-form">
-            <div class="cta-form-row">
-              <input type="text" name="name" placeholder="<?php echo esc_attr($cd_csd_form_name_ph); ?>" required class="cta-input" />
-              <input type="tel" name="phone" placeholder="<?php echo esc_attr($cd_csd_form_phone_ph); ?>" required class="cta-input" />
-            </div>
-            <input type="email" name="email" placeholder="<?php echo esc_attr($cd_csd_form_email_ph); ?>" required class="cta-input" />
-            <input type="text" name="service" placeholder="<?php echo esc_attr($cd_csd_form_service_ph); ?>" class="cta-input" />
-            <textarea name="message" placeholder="<?php echo esc_attr($cd_csd_form_message_ph); ?>" rows="5" class="cta-input cta-textarea"></textarea>
-            <button type="submit" class="btn btn-outline cta-submit"><?php echo esc_html($cd_csd_form_submit); ?></button>
-          </form>
-        </div>
-      </div>
-    </section>
+    <?php craftdigitally_render_shared_cta_section(); ?>
   </div>
 </main>
 

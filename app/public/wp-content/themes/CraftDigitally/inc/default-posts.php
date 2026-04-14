@@ -150,7 +150,15 @@ function craftdigitally_create_default_posts() {
       update_field('blog_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $post_id);
       update_field('blog_cta_button_label', 'Book a Free Consult', $post_id);
       update_field('blog_author_tag', 'LOCAL SEO EXPERT', $post_id);
-      update_field('blog_author_name', ($current_user && !empty($current_user->display_name)) ? $current_user->display_name : 'Admin', $post_id);
+      $default_author_name = ($current_user && !empty($current_user->display_name) && strtolower($current_user->display_name) !== 'admin')
+        ? $current_user->display_name
+        : 'Yashasvi Zala';
+      update_field('blog_author_name', $default_author_name, $post_id);
+      update_field(
+        'blog_author_bio',
+        'Passionate about helping local businesses get discovered, Yashasvi creates simple, effective SEO strategies that increase foot traffic, calls, and online visibility.',
+        $post_id
+      );
     }
   }
 

@@ -40,6 +40,26 @@ function craftdigitally_get_case_study_detail_base_url() {
 }
 
 /**
+ * Helper: Get Case Study Detail URL for a specific post.
+ *
+ * Routes case study cards to the page using `page-case-study-detail.php`
+ * so the site uses one consistent detail layout.
+ *
+ * @param int $post_id Case study post ID.
+ * @return string
+ */
+function craftdigitally_get_case_study_detail_url($post_id = 0) {
+  $base_url = craftdigitally_get_case_study_detail_base_url();
+  $post_id = absint($post_id);
+
+  if ($post_id <= 0) {
+    return $base_url;
+  }
+
+  return add_query_arg('post_id', $post_id, $base_url);
+}
+
+/**
  * Helper: Get Service Detail base URL (page using Service Detail template)
  *
  * @return string
