@@ -110,21 +110,20 @@ function craftdigitally_disable_post_excerpt_support() {
 add_action('init', 'craftdigitally_disable_post_excerpt_support', 11);
 
 /**
- * Admin UI: hide Categories + Tags on blog (default `post`) screens.
+ * Admin UI: hide Tags on blog (default `post`) screens.
  *
  * Applies to:
- * - Add/Edit post screen (metaboxes)
- * - Posts listing screen (top filter dropdowns)
+ * - Add/Edit post screen (metabox)
  */
-function craftdigitally_admin_hide_post_categories_and_tags() {
+function craftdigitally_admin_hide_post_tags() {
   if (!is_admin()) {
     return;
   }
 
-  remove_meta_box('categorydiv', 'post', 'side');
+  // Keep Categories enabled; only hide Tags.
   remove_meta_box('tagsdiv-post_tag', 'post', 'side');
 }
-add_action('admin_menu', 'craftdigitally_admin_hide_post_categories_and_tags', 999);
+add_action('admin_menu', 'craftdigitally_admin_hide_post_tags', 999);
 
 /**
  * Hide taxonomy dropdown filters in the Posts list table.
@@ -140,10 +139,9 @@ function craftdigitally_admin_hide_post_list_tax_filters() {
   }
 
   echo '<style>
-    /* Hide "All Categories" + "All Tags" dropdowns in Posts list table */
-    select#cat, select[name="cat"],
+    /* Hide "All Tags" dropdown in Posts list table (keep Categories visible) */
     select#post_tag, select[name="post_tag"],
-    label[for="cat"], label[for="post_tag"] {
+    label[for="post_tag"] {
       display: none !important;
     }
   </style>';

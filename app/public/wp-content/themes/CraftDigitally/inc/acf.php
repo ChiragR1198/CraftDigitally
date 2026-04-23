@@ -1561,9 +1561,7 @@ At CraftDigitally, we don\'t just "do SEO." We engineer your online presence to 
 
       // HERO (only these 3)
       craftdigitally_acf_tab_field('blog_post_tab_hero_simple', 'Hero Banner', 'top'),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author', 'blog_author', 'Author (e.g. By Admin)', 'text'), 34),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_date', 'blog_date', 'Date (e.g. February 27, 2026)', 'text'), 33),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_read_time', 'blog_read_time', 'Read Time (e.g. 1 min read)', 'text'), 33),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_read_time', 'blog_read_time', 'Read Time (e.g. 1 min read)', 'text'), 100),
 
       // CTA blocks (center + right are separate)
       craftdigitally_acf_tab_field('blog_post_tab_cta_simple', 'CTA Blocks', 'top'),
@@ -1575,18 +1573,6 @@ At CraftDigitally, we don\'t just "do SEO." We engineer your online presence to 
       craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_sidebar_cta_button_label', 'blog_sidebar_cta_button_label', 'Right Sidebar CTA Button Label', 'text'), 50),
       craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_sidebar_cta_text', 'blog_sidebar_cta_text', 'Right Sidebar CTA Text', 'textarea'), 100),
 
-      // AUTHOR CARD
-      craftdigitally_acf_tab_field('blog_post_tab_author_simple', 'Author', 'top'),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_tag', 'blog_author_tag', 'Author Tag (e.g. LOCAL SEO EXPERT)', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_name', 'blog_author_name', 'Author Name', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_image_field('blog_author_avatar', 'blog_author_avatar', 'Author Image'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_bio', 'blog_author_bio', 'Author Bio', 'textarea'), 100),
- 
-      craftdigitally_acf_tab_field('blog_post_tab_author_links_simple', 'Author Links', 'top'),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_linkedin_url', 'blog_author_linkedin_url', 'LinkedIn URL'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_x_url', 'blog_author_x_url', 'X (Twitter) URL'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_facebook_url', 'blog_author_facebook_url', 'Facebook URL'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_whatsapp_url', 'blog_author_whatsapp_url', 'WhatsApp URL'), 25),
     ),
     'location' => craftdigitally_acf_location_post_type('post', array('blog')),
     'position' => 'normal',

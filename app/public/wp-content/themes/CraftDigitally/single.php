@@ -31,10 +31,7 @@ if (!empty($cats) && !is_wp_error($cats) && !empty($cats[0]->name)) {
 }
 
 $cd_bdp_title = get_the_title($post_id);
-$author_id = (int) get_post_field('post_author', $post_id);
-$author_name = trim((string) get_the_author_meta('display_name', $author_id));
-$author_name = $author_name !== '' ? $author_name : 'Admin';
-$cd_bdp_author_default = 'By ' . $author_name;
+$cd_bdp_author_default = 'By ' . craftdigitally_bdp_resolve_author_display_name($post_id);
 $cd_bdp_date_default = get_the_date('F j, Y', $post_id);
 
 // Basic reading time (words / 200 wpm).
@@ -42,8 +39,8 @@ $cd_bdp_word_count = str_word_count(wp_strip_all_tags((string) get_post_field('p
 $cd_bdp_minutes = max(1, (int) ceil($cd_bdp_word_count / 200));
 $cd_bdp_read_time_default = $cd_bdp_minutes . ' min read';
 
-$cd_bdp_author = craftdigitally_get_acf('blog_author', $cd_bdp_author_default, $post_id);
-$cd_bdp_date = craftdigitally_get_acf('blog_date', $cd_bdp_date_default, $post_id);
+$cd_bdp_author = $cd_bdp_author_default;
+$cd_bdp_date = $cd_bdp_date_default;
 $cd_bdp_read_time = craftdigitally_get_acf('blog_read_time', $cd_bdp_read_time_default, $post_id);
 
 // Featured image (fallback to theme asset).
@@ -84,7 +81,7 @@ $cd_bdp_sections = isset($cd_bdp_built['sections']) ? $cd_bdp_built['sections'] 
             <div class="bdp-text-wrapper"><?php echo esc_html($cd_bdp_category); ?></div>
           </div>
           <hr class="bdp-hero-title-divider" aria-hidden="true" />
-          <p class="bdp-div"><?php echo esc_html($cd_bdp_title); ?></p>
+          <h1 class="bdp-div"><?php echo esc_html($cd_bdp_title); ?></h1>
         </div>
         <div class="bdp-meta-data">
           <div class="bdp-div-wrapper"><div class="bdp-text-wrapper-2"><?php echo esc_html($cd_bdp_author); ?></div></div>
@@ -117,16 +114,16 @@ $cd_bdp_sections = isset($cd_bdp_built['sections']) ? $cd_bdp_built['sections'] 
         <div class="bdp-content-2" id="bdp-blog-content">
           <?php if (!empty(trim(wp_strip_all_tags($cd_bdp_intro_html)))) : ?>
           <div class="bdp-div-2">
-            <p class="bdp-text-wrapper-4">
+            <div class="bdp-text-wrapper-4">
               <?php echo wp_kses_post($cd_bdp_intro_html); ?>
-            </p>
+            </div>
           </div>
           <?php endif; ?>
 
           <?php if (!empty($cd_bdp_sections)) : ?>
             <?php foreach ($cd_bdp_sections as $i => $section) : ?>
               <div class="bdp-div-2" id="<?php echo esc_attr($section['id']); ?>">
-                <div class="bdp-text-wrapper-5"><?php echo esc_html($section['title']); ?></div>
+                <h2 class="bdp-text-wrapper-5"><?php echo esc_html($section['title']); ?></h2>
                 <div class="bdp-flexcontainer-2">
                   <?php echo wp_kses_post($section['html']); ?>
                 </div>

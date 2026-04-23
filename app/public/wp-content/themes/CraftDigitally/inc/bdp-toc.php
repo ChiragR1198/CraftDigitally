@@ -199,6 +199,24 @@ function craftdigitally_bdp_build_structured_content_from_post_html($html) {
     return $result;
   }
 
+  // TinyMCE can leave behind empty heading tags like <h2></h2> / <h3></h3>.
+  // Remove them so blank headings do not render as fake "Section" rows.
+  foreach (iterator_to_array($root->childNodes) as $child) {
+    if (!($child instanceof DOMElement)) {
+      continue;
+    }
+
+    $tag = strtolower($child->tagName);
+    if ($tag !== 'h2' && $tag !== 'h3') {
+      continue;
+    }
+
+    $text = trim(preg_replace('/\s+/', ' ', $child->textContent));
+    if ($text === '' && $child->parentNode) {
+      $child->parentNode->removeChild($child);
+    }
+  }
+
   $usedIds = array();
   foreach ($dom->getElementsByTagName('*') as $node) {
     if ($node instanceof DOMElement && $node->hasAttribute('id')) {

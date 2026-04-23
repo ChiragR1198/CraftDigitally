@@ -8613,6 +8613,44 @@ body.elementor-template-canvas .site-footer {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Post blockquotes (blog detail / single) — content is not inside .entry-content */
+.bdp-page .bdp-content-2 blockquote {
+  max-width: 100%;
+  box-sizing: border-box;
+  background-color: var(--bg-light);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 28px;
+  color: #363636;
+}
+
+/* Post lists — global * reset removed default list padding; blog body has no .entry-content wrapper */
+.bdp-page .bdp-content-2 ul,
+.bdp-page .bdp-content-2 ol {
+  margin: 0 0 1em 0;
+  padding-left: 1.5em;
+  list-style-position: outside;
+}
+.bdp-page .bdp-content-2 ul {
+  list-style-type: disc;
+}
+.bdp-page .bdp-content-2 ol {
+  list-style-type: decimal;
+}
+.bdp-page .bdp-content-2 li {
+  display: list-item;
+  margin-bottom: 0.5em;
+  font-size: 16px;
+  line-height: 28px;
+}
+.bdp-page .bdp-content-2 ul ul {
+  list-style-type: circle;
+  margin: 0.5em 0 0.5em 0;
+}
+.bdp-page .bdp-content-2 ul ul ul {
+  list-style-type: square;
+}
+
 .bdp-page .bdp-div-2 {
   max-width: 640px;
   gap: 16px;
@@ -8650,6 +8688,12 @@ body.elementor-template-canvas .site-footer {
   line-height: var(--heading-2-line-height);
   font-style: var(--heading-2-font-style);
   text-align: left;
+}
+
+/* Real <h2> for section titles — cancel browser default heading margins; flex gap on .bdp-div-2 handles spacing */
+.bdp-page .bdp-div-2 > h2.bdp-text-wrapper-5 {
+  margin: 0;
+  width: 100%;
 }
 
 .bdp-page .bdp-text {

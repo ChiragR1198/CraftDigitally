@@ -127,6 +127,38 @@
   margin-bottom: 0.5em;
 }
 
+/* Classic Editor (TinyMCE): restore list markers + indent (iframe body is not .editor-styles-wrapper) */
+body.mce-content-body ul,
+body.mce-content-body ol,
+#tinymce ul,
+#tinymce ol {
+  margin: 0 0 1em 0;
+  padding-left: 1.5em;
+  list-style-position: outside;
+}
+body.mce-content-body ul,
+#tinymce ul {
+  list-style-type: disc;
+}
+body.mce-content-body ol,
+#tinymce ol {
+  list-style-type: decimal;
+}
+body.mce-content-body li,
+#tinymce li {
+  display: list-item;
+  margin-bottom: 0.5em;
+}
+body.mce-content-body ul ul,
+#tinymce ul ul {
+  list-style-type: circle;
+  margin: 0.5em 0 0.5em 0;
+}
+body.mce-content-body ul ul ul,
+#tinymce ul ul ul {
+  list-style-type: square;
+}
+
 /* Quotes */
 .editor-styles-wrapper blockquote {
   border-left: 4px solid var(--primary-color);
@@ -135,6 +167,13 @@
   margin-right: 0;
   font-style: italic;
   color: #666;
+}
+
+/* Classic Editor (TinyMCE): iframe body is .mce-content-body, not .editor-styles-wrapper */
+body.mce-content-body blockquote,
+#tinymce blockquote {
+  margin: 1.25em 0;
+  font-style: italic;
 }
 
 /* Code */

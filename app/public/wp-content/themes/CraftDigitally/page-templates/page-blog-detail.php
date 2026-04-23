@@ -57,11 +57,13 @@ $cd_bdp_word_count = str_word_count(wp_strip_all_tags((string) get_post_field('p
 $cd_bdp_minutes = max(1, (int) ceil($cd_bdp_word_count / 200));
 $cd_bdp_read_time_fallback = $cd_bdp_minutes . ' min read';
 
-// Hero values: editable via ACF fallback-only fields on the template/page or per post fields.
+// Hero values: category/title come from content; author comes from the assigned WordPress user.
 $cd_bdp_category = $cd_bdp_default_cat;
 $cd_bdp_title = $cd_bdp_title_fallback;
-$cd_bdp_author = craftdigitally_get_acf($cd_bdp_hero_prefix . 'author', 'By Admin', $cd_bdp_context_id);
-$cd_bdp_date = craftdigitally_get_acf($cd_bdp_hero_prefix . 'date', $cd_bdp_date_fallback, $cd_bdp_context_id);
+$cd_bdp_author = 'By ' . craftdigitally_bdp_resolve_author_display_name($cd_bdp_context_id);
+$cd_bdp_date = $cd_bdp_is_post_context
+  ? $cd_bdp_date_fallback
+  : craftdigitally_get_acf($cd_bdp_hero_prefix . 'date', $cd_bdp_date_fallback, $cd_bdp_context_id);
 $cd_bdp_read_time = craftdigitally_get_acf($cd_bdp_hero_prefix . 'read_time', $cd_bdp_read_time_fallback, $cd_bdp_context_id);
 
 // Featured image injection (for the inline image block in the 3rd section).
@@ -121,6 +123,24 @@ function craftdigitally_bdp_build_structured_content($html) {
     libxml_clear_errors();
     libxml_use_internal_errors($prevUseErrors);
     return $result;
+  }
+
+  // TinyMCE can leave behind empty heading tags like <h2></h2> / <h3></h3>.
+  // Remove them so blank headings do not render as fake "Section" rows.
+  foreach (iterator_to_array($root->childNodes) as $child) {
+    if (!($child instanceof DOMElement)) {
+      continue;
+    }
+
+    $tag = strtolower($child->tagName);
+    if ($tag !== 'h2' && $tag !== 'h3') {
+      continue;
+    }
+
+    $text = trim(preg_replace('/\s+/', ' ', $child->textContent));
+    if ($text === '' && $child->parentNode) {
+      $child->parentNode->removeChild($child);
+    }
   }
 
   $usedIds = array();
@@ -230,7 +250,7 @@ $cd_bdp_sections = isset($cd_bdp_built['sections']) ? $cd_bdp_built['sections'] 
             <div class="bdp-text-wrapper"><?php echo esc_html($cd_bdp_category); ?></div>
           </div>
           <hr class="bdp-hero-title-divider" aria-hidden="true" />
-          <p class="bdp-div"><?php echo esc_html($cd_bdp_title); ?></p>
+          <h1 class="bdp-div"><?php echo esc_html($cd_bdp_title); ?></h1>
         </div>
         <div class="bdp-meta-data">
           <div class="bdp-div-wrapper"><div class="bdp-text-wrapper-2"><?php echo esc_html($cd_bdp_author); ?></div></div>
@@ -263,16 +283,16 @@ $cd_bdp_sections = isset($cd_bdp_built['sections']) ? $cd_bdp_built['sections'] 
         <div class="bdp-content-2" id="bdp-blog-content">
           <?php if (!empty(trim(wp_strip_all_tags($cd_bdp_intro_html)))) : ?>
             <div class="bdp-div-2">
-              <p class="bdp-text-wrapper-4">
+              <div class="bdp-text-wrapper-4">
                 <?php echo wp_kses_post($cd_bdp_intro_html); ?>
-              </p>
+              </div>
             </div>
           <?php endif; ?>
 
           <?php if (!empty($cd_bdp_sections)) : ?>
             <?php foreach ($cd_bdp_sections as $i => $section) : ?>
               <div class="bdp-div-2" id="<?php echo esc_attr($section['id']); ?>">
-                <div class="bdp-text-wrapper-5"><?php echo esc_html($section['title']); ?></div>
+                <h2 class="bdp-text-wrapper-5"><?php echo esc_html($section['title']); ?></h2>
                 <div class="bdp-flexcontainer-2">
                   <?php echo wp_kses_post($section['html']); ?>
                 </div>

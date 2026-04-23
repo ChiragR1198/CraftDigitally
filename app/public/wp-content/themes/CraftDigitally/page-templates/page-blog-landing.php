@@ -133,7 +133,7 @@ if ($cd_blog_posts_q->have_posts()) {
     $default_cat = $wp_cats[0]->name;
   }
   $cd_blog_featured_category = craftdigitally_get_acf('blog_category', $default_cat, $featured_id);
-  $cd_blog_featured_date = craftdigitally_get_acf('blog_date', get_the_date('d/m/Y', $featured_id), $featured_id);
+  $cd_blog_featured_date = get_the_date('d/m/Y', $featured_id);
   $cd_blog_featured_excerpt = craftdigitally_get_acf('blog_intro', get_the_excerpt($featured_id), $featured_id);
   $cd_blog_featured_btn_label = craftdigitally_get_acf('blog_landing_featured_button_label', 'Read more');
   $cd_blog_featured_btn_url = get_permalink($featured_id);
@@ -176,7 +176,7 @@ if ($cd_blog_posts_q->have_posts()) {
       ),
       'image_alt' => craftdigitally_get_acf('blog_featured_image_alt', get_the_title($pid), $pid),
       'category' => craftdigitally_get_acf('blog_category', $default_cat, $pid),
-      'date' => craftdigitally_get_acf('blog_date', get_the_date('d/m/Y', $pid), $pid),
+      'date' => get_the_date('d/m/Y', $pid),
       'title' => craftdigitally_get_acf('blog_title', get_the_title($pid), $pid),
       'button_label' => 'Read More',
       'url' => $post_url,
