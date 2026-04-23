@@ -48,322 +48,176 @@ if ($cd_bdp_is_post_context) {
   if (!empty($wp_cats) && !is_wp_error($wp_cats) && !empty($wp_cats[0]->name)) {
     $cd_bdp_default_cat = $wp_cats[0]->name;
   }
-  $cd_bdp_category = craftdigitally_get_acf('blog_category', $cd_bdp_default_cat, $cd_bdp_context_id);
-  $cd_bdp_title = craftdigitally_get_acf('blog_title', get_the_title($cd_bdp_context_id), $cd_bdp_context_id);
-  $cd_bdp_author_default = 'By ' . get_the_author_meta('display_name', (int) get_post_field('post_author', $cd_bdp_context_id));
-  $cd_bdp_author = craftdigitally_get_acf('blog_author', $cd_bdp_author_default, $cd_bdp_context_id);
-  $cd_bdp_date = craftdigitally_get_acf('blog_date', get_the_date('F j, Y', $cd_bdp_context_id), $cd_bdp_context_id);
-  $cd_bdp_read_time = craftdigitally_get_acf('blog_read_time', '3 min read', $cd_bdp_context_id);
-} else {
-  // Fallback (prefilled) when this page is viewed directly without a selected post.
-  $cd_bdp_category = craftdigitally_get_acf('blog_detail_category', 'LOCAL SEO', $cd_bdp_context_id);
-  $cd_bdp_title = craftdigitally_get_acf('blog_detail_title', 'Why Local SEO Matters for Small Businesses in 2025', $cd_bdp_context_id);
-  $cd_bdp_author = craftdigitally_get_acf('blog_detail_author', 'By Yashasvi Zala', $cd_bdp_context_id);
-  $cd_bdp_date = craftdigitally_get_acf('blog_detail_date', 'September 17,2025', $cd_bdp_context_id);
-  $cd_bdp_read_time = craftdigitally_get_acf('blog_detail_read_time', '3 min read', $cd_bdp_context_id);
 }
+$cd_bdp_hero_prefix = $cd_bdp_is_post_context ? 'blog_' : 'blog_detail_';
 
-// Featured image (same image field should drive list + detail for posts).
-$cd_bdp_featured_img = '';
-$cd_bdp_featured_img_alt = '';
-if ($cd_bdp_is_post_context) {
-  $thumb_url = get_the_post_thumbnail_url($cd_bdp_context_id, 'large');
-  $cd_bdp_featured_img = craftdigitally_get_acf_image_url(
-    'blog_featured_image',
-    $thumb_url ? $thumb_url : (get_template_directory_uri() . '/assets/images/bookimage.png'),
-    $cd_bdp_context_id
-  );
-  $cd_bdp_featured_img_alt = craftdigitally_get_acf('blog_featured_image_alt', get_the_title($cd_bdp_context_id), $cd_bdp_context_id);
-} else {
-  $cd_bdp_featured_img = craftdigitally_get_acf_image_url(
-    'blog_detail_featured_image',
-    get_template_directory_uri() . '/assets/images/bookimage.png',
-    $cd_bdp_context_id
-  );
-  $cd_bdp_featured_img_alt = craftdigitally_get_acf('blog_detail_featured_image_alt', 'Blog Image', $cd_bdp_context_id);
-}
+$cd_bdp_title_fallback = get_the_title($cd_bdp_context_id);
+$cd_bdp_date_fallback = get_the_date('F j, Y', $cd_bdp_context_id);
+$cd_bdp_word_count = str_word_count(wp_strip_all_tags((string) get_post_field('post_content', $cd_bdp_context_id)));
+$cd_bdp_minutes = max(1, (int) ceil($cd_bdp_word_count / 200));
+$cd_bdp_read_time_fallback = $cd_bdp_minutes . ' min read';
+
+// Hero values: editable via ACF fallback-only fields on the template/page or per post fields.
+$cd_bdp_category = $cd_bdp_default_cat;
+$cd_bdp_title = $cd_bdp_title_fallback;
+$cd_bdp_author = craftdigitally_get_acf($cd_bdp_hero_prefix . 'author', 'By Admin', $cd_bdp_context_id);
+$cd_bdp_date = craftdigitally_get_acf($cd_bdp_hero_prefix . 'date', $cd_bdp_date_fallback, $cd_bdp_context_id);
+$cd_bdp_read_time = craftdigitally_get_acf($cd_bdp_hero_prefix . 'read_time', $cd_bdp_read_time_fallback, $cd_bdp_context_id);
+
+// Featured image injection (for the inline image block in the 3rd section).
+$cd_bdp_wp_thumb_url = get_the_post_thumbnail_url($cd_bdp_context_id, 'large');
+$cd_bdp_wp_thumb_url = $cd_bdp_wp_thumb_url ? $cd_bdp_wp_thumb_url : (get_template_directory_uri() . '/assets/images/bookimage.png');
+$cd_bdp_featured_img = $cd_bdp_wp_thumb_url;
+$cd_bdp_featured_img_alt = $cd_bdp_title_fallback;
 
 $cd_bdp_share_url = esc_url_raw(get_permalink($cd_bdp_context_id));
 $cd_bdp_share_title = wp_strip_all_tags($cd_bdp_title);
 
-$cd_bdp_toc_default = array(
-  array('text' => 'What Is Local SEO?'),
-  array('text' => 'Why Local SEO Is Essential in 2025'),
-  array('text' => 'Key Benefits of Local SEO'),
-  array('text' => 'Important Local SEO Ranking Factors'),
-  array('text' => 'How to Improve Your Local SEO'),
-  array('text' => 'Final Thoughts'),
-);
-$cd_bdp_toc = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf_array('blog_toc', $cd_bdp_toc_default, $cd_bdp_context_id)
-  : craftdigitally_get_acf_array('blog_detail_toc', $cd_bdp_toc_default, $cd_bdp_context_id);
-
-$cd_bdp_intro = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_intro', get_the_excerpt($cd_bdp_context_id), $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_intro', "If you run a local business in 2025, competition isn't what it used to be. Customers now rely on\n              Google to decide where to shop, which doctor to trust, or which service provider to call. They compare\n              reviews, check hours, and look for the highest-rated businesses — all within seconds.", $cd_bdp_context_id);
-
-$cd_bdp_local_seo_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_local_seo_title', 'What Is Local SEO?', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_local_seo_title', 'What Is Local SEO?', $cd_bdp_context_id);
-$cd_bdp_local_seo_html_default = '<p class="bdp-text">
-                <span class="bdp-text-wrapper-6"
-                  >Local SEO (Local Search Engine Optimization) is the process of improving your online presence so
-                  your business appears in
-                </span>
-                <span class="bdp-text-wrapper-7">local Google searches,</span>
-                <span class="bdp-text-wrapper-6"> Google Maps, and the Local 3-Pack.</span>
-              </p>
-              <p class="bdp-text">
-                <span class="bdp-text-wrapper-6"
-                  >When someone searches for "salon near me," "best bakery in Ahmedabad," or "AC repair nearby,"
-                  Google shows a list of top local businesses based on relevance, reviews, and proximity. Local SEO
-                  ensures
-                </span>
-                <span class="bdp-text-wrapper-7">your business shows up in these results</span>
-                <span class="bdp-text-wrapper-6">, giving you maximum visibility at the right time.</span>
-              </p>';
-$cd_bdp_local_seo_html = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_local_seo_html', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_local_seo_html', $cd_bdp_local_seo_html_default, $cd_bdp_context_id);
-
-$cd_bdp_essential_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_essential_title', 'Why Local SEO Is Essential in 2025', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_essential_title', 'Why Local SEO Is Essential in 2025', $cd_bdp_context_id);
-$cd_bdp_essential_intro = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_essential_intro', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_essential_intro', "Search behaviour continues to shift, and local businesses must keep up. Here's why Local SEO matters\n              more than ever:", $cd_bdp_context_id);
-$cd_bdp_essential_html_default = '<div class="bdp-flexcontainer-3">
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-7">People Trust Search Engines Over Traditional Advertising</span>
-                </p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Customers rely on online results, reviews, and ratings to choose businesses. If you\'re not
-                    visible, you\'re losing opportunities.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-4">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">"Near Me" Searches Are Growing Rapidly</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">More people use mobile searches like:</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">"best dentist near me"</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">"urgent care open now"</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">"cafe near me with wifi"</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6">Google prioritises local results that are optimized.</span>
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-3">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">Google\'s Local Algorithms Are Smarter</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Google uses AI to understand user intent better, showing hyper-relevant businesses. Only
-                    optimized businesses rank well.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-3">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">Competition Is Increasing</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >More businesses are investing in online visibility — if you aren\'t, your competitors will
-                    dominate the results.</span
-                  >
-                </p>
-              </div>';
-$cd_bdp_essential_html = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_essential_html', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_essential_html', $cd_bdp_essential_html_default, $cd_bdp_context_id);
-
-$cd_bdp_benefits_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_benefits_title', 'Key Benefits of Local SEO', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_benefits_title', 'Key Benefits of Local SEO', $cd_bdp_context_id);
-$cd_bdp_benefits_html_default = '<div class="bdp-flexcontainer-3">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">1. Increased Local Visibility</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Appear in Google\'s Local Pack and Maps results, where most local clicks happen.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">2. More Qualified Leads</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >People searching locally are ready to take action — call, visit, or book.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-3">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">3. Stronger Trust &amp; Reputation</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Consistent reviews, accurate information, and updated profiles make you look more
-                    reliable.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">4. Boost in Store Visits &amp; Calls</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Local search directly influences in-person visits and enquiries.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">5. Cost-Effective Long-Term Growth</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Unlike paid ads, Local SEO delivers results for months and years.</span
-                  >
-                </p>
-              </div>';
-$cd_bdp_benefits_html = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_benefits_html', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_benefits_html', $cd_bdp_benefits_html_default, $cd_bdp_context_id);
-
-$cd_bdp_factors_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_factors_title', 'Important Local SEO Ranking Factors', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_factors_title', 'Important Local SEO Ranking Factors', $cd_bdp_context_id);
-$cd_bdp_factors_intro = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_factors_intro', 'Google considers several factors before ranking a local business:', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_factors_intro', 'Google considers several factors before ranking a local business:', $cd_bdp_context_id);
-$cd_bdp_factors_html_default = '<div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">Google Business Profile Optimization</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Accurate information, photos, updates, and category selection matter.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">NAP Consistency (Name, Address, Phone)</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6">Your business information must match across all platforms.</span>
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">Reviews &amp; Ratings</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >High ratings and recent reviews help you rank higher and convert better.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">Local Citations</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6">Listings on trusted directories increase authority.</span>
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-3">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">On-Page Local SEO</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Optimized pages with local keywords help Google understand your relevance.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">Backlinks from Local Websites</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6">Local mentions build trust and ranking power.</span>
-                </p>
-              </div>';
-$cd_bdp_factors_html = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_factors_html', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_factors_html', $cd_bdp_factors_html_default, $cd_bdp_context_id);
-
-$cd_bdp_improve_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_improve_title', 'How to Improve Your Local SEO', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_improve_title', 'How to Improve Your Local SEO', $cd_bdp_context_id);
-$cd_bdp_improve_html_default = '<div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">1. Optimize Your Google Business Profile</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Add photos, services, categories, posts, and keep it updated regularly.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-6">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">2. Use Local Keywords</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">Examples:</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">"best coaching classes in Surat"</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">"plumber in South Delhi"</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">"wedding photographer in Chandigarh"</span></p>
-              </div>
-              <div class="bdp-flexcontainer-3">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">3. Ask for Reviews Regularly</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Happy customers are the best marketing asset. Respond to each review professionally.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-7">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">4. Build Local Citations</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">Get listed on:</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">JustDial</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">Sulekha</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">IndiaMart</span></p>
-                <p class="bdp-text"><span class="bdp-text-wrapper-6">Niche directories</span></p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">5. Improve Your Website\'s On-Page SEO</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6"
-                    >Local schema, internal links, meta tags, and fast loading speeds matter.</span
-                  >
-                </p>
-              </div>
-              <div class="bdp-flexcontainer-5">
-                <p class="bdp-text"><span class="bdp-text-wrapper-7">6. Publish Local-Focused Content</span></p>
-                <p class="bdp-text">
-                  <span class="bdp-text-wrapper-6">Create blogs and guides that answer your customers\' questions.</span>
-                </p>
-              </div>';
-$cd_bdp_improve_html = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_improve_html', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_improve_html', $cd_bdp_improve_html_default, $cd_bdp_context_id);
-
-$cd_bdp_testimonial_quote = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_testimonial_quote', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_testimonial_quote', "Before working with CraftDigitally, SEO felt like a fog I couldn't navigate. Their process made\n              everything so clear and actionable. I left with not only a visible online presence but a genuine sense\n              of confidence in how I show up digitally", $cd_bdp_context_id);
-
-$cd_bdp_final_title = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_final_title', 'Final Thoughts', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_final_title', 'Final Thoughts', $cd_bdp_context_id);
-$cd_bdp_final_html_default = '<p class="bdp-p">
-                <span class="bdp-span"
-                  >Local SEO is no longer optional — it\'s the foundation of online visibility for small businesses.
-                  With more people relying on Google to find services nearby, staying optimized gives you a
-                  competitive edge.</span
-                >
-              </p>
-              <p class="bdp-p">
-                <span class="bdp-span"
-                  >If you want consistent leads, stronger visibility, and long-term growth, Local SEO should be a
-                  top priority for your business in 2025.</span
-                >
-              </p>';
-$cd_bdp_final_html = $cd_bdp_is_post_context
-  ? craftdigitally_get_acf('blog_final_html', '', $cd_bdp_context_id)
-  : craftdigitally_get_acf('blog_detail_final_html', $cd_bdp_final_html_default, $cd_bdp_context_id);
-
 $cd_bdp_shared_cta = craftdigitally_get_shared_cta_data();
-$cd_bdp_cta_title = $cd_bdp_shared_cta['title'];
-$cd_bdp_cta_text = $cd_bdp_shared_cta['subtitle'];
-$cd_bdp_cta_btn_label = $cd_bdp_shared_cta['button_label'];
+$cd_bdp_cta_prefix = $cd_bdp_is_post_context ? 'blog_' : 'blog_detail_';
+$cd_bdp_cta_title = craftdigitally_get_acf($cd_bdp_cta_prefix . 'cta_title', $cd_bdp_shared_cta['title'], $cd_bdp_context_id);
+$cd_bdp_cta_text = craftdigitally_get_acf($cd_bdp_cta_prefix . 'cta_text', $cd_bdp_shared_cta['subtitle'], $cd_bdp_context_id);
+$cd_bdp_cta_btn_label = craftdigitally_get_acf($cd_bdp_cta_prefix . 'cta_button_label', $cd_bdp_shared_cta['button_label'], $cd_bdp_context_id);
+
+// Right sidebar CTA (separate fields).
+$cd_bdp_sidebar_cta_title = craftdigitally_get_acf($cd_bdp_cta_prefix . 'sidebar_cta_title', $cd_bdp_cta_title, $cd_bdp_context_id);
+$cd_bdp_sidebar_cta_text = craftdigitally_get_acf($cd_bdp_cta_prefix . 'sidebar_cta_text', $cd_bdp_cta_text, $cd_bdp_context_id);
+$cd_bdp_sidebar_cta_btn_label = craftdigitally_get_acf($cd_bdp_cta_prefix . 'sidebar_cta_button_label', $cd_bdp_cta_btn_label, $cd_bdp_context_id);
 
 $cd_bdp_author_block_prefix = $cd_bdp_is_post_context ? 'blog_' : 'blog_detail_';
 
-// If post content blocks are empty, use the post content as a fallback (keeps UI while making Posts usable immediately).
-if ($cd_bdp_is_post_context) {
-  if (empty($cd_bdp_local_seo_html) && empty($cd_bdp_essential_html) && empty($cd_bdp_benefits_html) && empty($cd_bdp_factors_html) && empty($cd_bdp_improve_html) && empty($cd_bdp_final_html)) {
-    $cd_bdp_local_seo_html = apply_filters('the_content', get_post_field('post_content', $cd_bdp_context_id));
+/**
+ * Build Blog Detail structured content from editor HTML.
+ * - TOC is built from H2 headings (in order).
+ * - Intro is everything before first H2.
+ * - Sections are split by H2 (each section contains everything until next H2).
+ *
+ * @return array{
+ *  toc: array<int, array{text:string, id:string}>,
+ *  intro_html: string,
+ *  sections: array<int, array{title:string, id:string, html:string}>
+ * }
+ */
+function craftdigitally_bdp_build_structured_content($html) {
+  $result = array('toc' => array(), 'intro_html' => '', 'sections' => array());
+
+  if (!is_string($html) || trim($html) === '') {
+    return $result;
   }
+
+  if (!class_exists('DOMDocument')) {
+    return $result;
+  }
+
+  $dom = new DOMDocument();
+  $prevUseErrors = libxml_use_internal_errors(true);
+
+  // Wrap in a container so we can extract innerHTML reliably.
+  $wrapped = '<!doctype html><html><head><meta charset="utf-8"></head><body><div id="cd-bdp-root">' . $html . '</div></body></html>';
+  $dom->loadHTML($wrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+  $root = $dom->getElementById('cd-bdp-root');
+  if (!$root) {
+    libxml_clear_errors();
+    libxml_use_internal_errors($prevUseErrors);
+    return $result;
+  }
+
+  $usedIds = array();
+  foreach ($dom->getElementsByTagName('*') as $node) {
+    if ($node instanceof DOMElement && $node->hasAttribute('id')) {
+      $usedIds[$node->getAttribute('id')] = true;
+    }
+  }
+
+  $make_unique_id = function ($text) use (&$usedIds) {
+    $base = sanitize_title($text);
+    if ($base === '') {
+      $base = 'section';
+    }
+    $candidate = $base;
+    $i = 2;
+    while (isset($usedIds[$candidate])) {
+      $candidate = $base . '-' . $i;
+      $i++;
+    }
+    $usedIds[$candidate] = true;
+    return $candidate;
+  };
+
+  $intro_html = '';
+  $sections = array();
+  $current = null;
+
+  foreach (iterator_to_array($root->childNodes) as $child) {
+    if (!($child instanceof DOMElement)) {
+      // Keep text nodes (whitespace/newlines) with current bucket.
+      if ($current === null) {
+        $intro_html .= $dom->saveHTML($child);
+      } else {
+        $current['html'] .= $dom->saveHTML($child);
+      }
+      continue;
+    }
+
+    $tag = strtolower($child->tagName);
+    if ($tag === 'h2') {
+      if ($current !== null) {
+        $sections[] = $current;
+      }
+
+      $title = trim(preg_replace('/\s+/', ' ', $child->textContent));
+      if ($title === '') {
+        $title = 'Section';
+      }
+
+      $id = $child->getAttribute('id');
+      if ($id === '') {
+        $id = $make_unique_id($title);
+        $child->setAttribute('id', $id);
+      }
+
+      $current = array(
+        'title' => $title,
+        'id' => $id,
+        'html' => '',
+      );
+      continue;
+    }
+
+    if ($current === null) {
+      $intro_html .= $dom->saveHTML($child);
+    } else {
+      $current['html'] .= $dom->saveHTML($child);
+    }
+  }
+
+  if ($current !== null) {
+    $sections[] = $current;
+  }
+
+  libxml_clear_errors();
+  libxml_use_internal_errors($prevUseErrors);
+
+  $toc = array();
+  foreach ($sections as $s) {
+    if (!empty($s['title']) && !empty($s['id'])) {
+      $toc[] = array('text' => $s['title'], 'id' => $s['id']);
+    }
+  }
+
+  $result['toc'] = $toc;
+  $result['intro_html'] = $intro_html;
+  $result['sections'] = $sections;
+  return $result;
 }
+
+$cd_bdp_raw_content = apply_filters('the_content', get_post_field('post_content', $cd_bdp_context_id));
+$cd_bdp_raw_content = craftdigitally_bdp_strip_legacy_demo_lead($cd_bdp_raw_content);
+$cd_bdp_built = craftdigitally_bdp_build_structured_content($cd_bdp_raw_content);
+$cd_bdp_toc = isset($cd_bdp_built['toc']) ? $cd_bdp_built['toc'] : array();
+$cd_bdp_intro_html = isset($cd_bdp_built['intro_html']) ? $cd_bdp_built['intro_html'] : '';
+$cd_bdp_sections = isset($cd_bdp_built['sections']) ? $cd_bdp_built['sections'] : array();
 ?>
 
 <div class="bdp-page">
@@ -394,73 +248,45 @@ if ($cd_bdp_is_post_context) {
             <div class="bdp-text-wrapper-3">Table of Contents</div>
             <div class="bdp-frame-3"></div>
             <div class="bdp-flexcontainer">
-              <ol class="bdp-toc-list">
-                <?php foreach ($cd_bdp_toc as $idx => $toc) : ?>
-                  <li class="bdp-toc-item">
-                    <a class="bdp-toc-link" href="#<?php echo esc_attr(craftdigitally_bdp_toc_section_anchor_id((int) $idx)); ?>"><?php echo esc_html(isset($toc['text']) ? $toc['text'] : ''); ?></a>
-                  </li>
-                <?php endforeach; ?>
-              </ol>
+              <?php if (!empty($cd_bdp_toc)) : ?>
+                <ol class="bdp-toc-list">
+                  <?php foreach ($cd_bdp_toc as $toc_item) : ?>
+                    <li class="bdp-toc-item">
+                      <a class="bdp-toc-link" href="#<?php echo esc_attr($toc_item['id']); ?>"><?php echo esc_html($toc_item['text']); ?></a>
+                    </li>
+                  <?php endforeach; ?>
+                </ol>
+              <?php endif; ?>
             </div>
           </div>
         </div>
         <div class="bdp-content-2" id="bdp-blog-content">
-          <div class="bdp-div-2">
-            <p class="bdp-text-wrapper-4">
-              <?php echo nl2br(esc_html($cd_bdp_intro)); ?>
-            </p>
-          </div>
-          <div class="bdp-div-2" id="bdp-section-local-seo">
-            <div class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_local_seo_title); ?></div>
-            <div class="bdp-flexcontainer-2">
-              <?php echo wp_kses_post($cd_bdp_local_seo_html); ?>
+          <?php if (!empty(trim(wp_strip_all_tags($cd_bdp_intro_html)))) : ?>
+            <div class="bdp-div-2">
+              <p class="bdp-text-wrapper-4">
+                <?php echo wp_kses_post($cd_bdp_intro_html); ?>
+              </p>
             </div>
-          </div>
-          <div class="bdp-div-2" id="bdp-section-essential">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_essential_title); ?></p>
-            <p class="bdp-p">
-              <?php echo esc_html($cd_bdp_essential_intro); ?>
-            </p>
-            <div class="bdp-auto-flex">
-              <?php echo wp_kses_post($cd_bdp_essential_html); ?>
-            </div>
-          </div>
-          <div class="bdp-div-2" id="bdp-section-benefits">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_benefits_title); ?></p>
-            <div class="bdp-auto">
-              <?php echo wp_kses_post($cd_bdp_benefits_html); ?>
-            </div>
-          </div>
-          <div class="bdp-img">
-            <?php if (!empty($cd_bdp_featured_img)): ?>
-              <img src="<?php echo esc_url($cd_bdp_featured_img); ?>" alt="<?php echo esc_attr($cd_bdp_featured_img_alt); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
-            <?php endif; ?>
-          </div>
-          <p class="bdp-text-wrapper-8">The client was struggling to attract local customers through online searches</p>
-          <div class="bdp-div-2" id="bdp-section-factors">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_factors_title); ?></p>
-            <p class="bdp-p"><?php echo esc_html($cd_bdp_factors_intro); ?></p>
-            <div class="bdp-auto-2">
-              <?php echo wp_kses_post($cd_bdp_factors_html); ?>
-            </div>
-          </div>
-          <div class="bdp-div-2" id="bdp-section-improve">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_improve_title); ?></p>
-            <div class="bdp-auto-3">
-              <?php echo wp_kses_post($cd_bdp_improve_html); ?>
-            </div>
-          </div>
-          <div class="bdp-testimonial-card">
-            <p class="bdp-text-wrapper-9">
-              <?php echo nl2br(esc_html($cd_bdp_testimonial_quote)); ?>
-            </p>
-          </div>
-          <div class="bdp-div-3" id="bdp-section-final">
-            <div class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_final_title); ?></div>
-            <div class="bdp-flexcontainer-8">
-              <?php echo wp_kses_post($cd_bdp_final_html); ?>
-            </div>
-          </div>
+          <?php endif; ?>
+
+          <?php if (!empty($cd_bdp_sections)) : ?>
+            <?php foreach ($cd_bdp_sections as $i => $section) : ?>
+              <div class="bdp-div-2" id="<?php echo esc_attr($section['id']); ?>">
+                <div class="bdp-text-wrapper-5"><?php echo esc_html($section['title']); ?></div>
+                <div class="bdp-flexcontainer-2">
+                  <?php echo wp_kses_post($section['html']); ?>
+                </div>
+              </div>
+
+              <?php if (($i + 1) === 3) : ?>
+                <div class="bdp-img">
+                  <?php if (!empty($cd_bdp_featured_img)) : ?>
+                    <img src="<?php echo esc_url($cd_bdp_featured_img); ?>" alt="<?php echo esc_attr($cd_bdp_featured_img_alt); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          <?php endif; ?>
           <div class="bdp-cta">
             <div class="bdp-frame-wrapper">
               <div class="bdp-content-wrapper">
@@ -487,14 +313,14 @@ if ($cd_bdp_is_post_context) {
             <div class="bdp-frame-wrapper">
               <div class="bdp-content-wrapper">
                 <div class="bdp-div-3">
-                  <p class="bdp-text-wrapper-4"><?php echo esc_html($cd_bdp_cta_title); ?></p>
+                  <p class="bdp-text-wrapper-4"><?php echo esc_html($cd_bdp_sidebar_cta_title); ?></p>
                   <p class="bdp-p">
-                    <?php echo esc_html($cd_bdp_cta_text); ?>
+                    <?php echo esc_html($cd_bdp_sidebar_cta_text); ?>
                   </p>
                 </div>
               </div>
             </div>
-            <button class="bdp-button"><div class="bdp-text-wrapper-10"><?php echo esc_html($cd_bdp_cta_btn_label); ?></div></button>
+            <button class="bdp-button"><div class="bdp-text-wrapper-10"><?php echo esc_html($cd_bdp_sidebar_cta_btn_label); ?></div></button>
           </div>
           <?php
           get_template_part(
@@ -513,8 +339,8 @@ if ($cd_bdp_is_post_context) {
       <div class="bdp-container-3">
         <div class="bdp-frame-6">
           <div class="bdp-content-3">
-            <p class="bdp-text-wrapper-14"><?php echo esc_html($cd_bdp_shared_cta['title']); ?></p>
-            <p class="bdp-text-wrapper-15"><?php echo esc_html($cd_bdp_shared_cta['subtitle']); ?></p>
+            <p class="bdp-text-wrapper-14"><?php echo esc_html($cd_bdp_cta_title); ?></p>
+            <p class="bdp-text-wrapper-15"><?php echo esc_html($cd_bdp_cta_text); ?></p>
           </div>
         </div>
         <div class="bdp-form">
@@ -527,7 +353,7 @@ if ($cd_bdp_is_post_context) {
             <div class="bdp-service"><div class="bdp-text-wrapper-16"><?php echo esc_html($cd_bdp_shared_cta['service_placeholder']); ?></div></div>
             <div class="bdp-message"><div class="bdp-text-wrapper-16"><?php echo esc_html($cd_bdp_shared_cta['message_placeholder']); ?></div></div>
           </div>
-          <button class="bdp-button-2"><div class="bdp-text-wrapper-17"><?php echo esc_html($cd_bdp_shared_cta['button_label']); ?></div></button>
+          <button class="bdp-button-2"><div class="bdp-text-wrapper-17"><?php echo esc_html($cd_bdp_cta_btn_label); ?></div></button>
         </div>
       </div>
     </div>

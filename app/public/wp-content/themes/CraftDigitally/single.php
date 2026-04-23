@@ -22,58 +22,56 @@ $blog_back_url = !empty($blog_landing_page) ? get_permalink($blog_landing_page[0
 // Back button is automatic (not editable in ACF).
 $cd_bdp_back_label = '< BACK TO BLOG';
 $cd_bdp_back_url = $blog_back_url;
-$cd_bdp_category = craftdigitally_get_acf('blog_category', 'LOCAL SEO', $post_id);
-$cd_bdp_title = craftdigitally_get_acf('blog_title', get_the_title(), $post_id);
-$cd_bdp_author = craftdigitally_get_acf('blog_author', 'By ' . get_the_author(), $post_id);
-$cd_bdp_date = craftdigitally_get_acf('blog_date', get_the_date('F j, Y'), $post_id);
-$cd_bdp_read_time = craftdigitally_get_acf('blog_read_time', '3 min read', $post_id);
 
-$cd_bdp_toc_default = array(
-  array('text' => 'What Is Local SEO?'),
-  array('text' => 'Why Local SEO Is Essential in 2025'),
-  array('text' => 'Key Benefits of Local SEO'),
-  array('text' => 'Important Local SEO Ranking Factors'),
-  array('text' => 'How to Improve Your Local SEO'),
-  array('text' => 'Final Thoughts'),
-);
-$cd_bdp_toc = craftdigitally_get_acf_array('blog_toc', $cd_bdp_toc_default, $post_id);
+// Hero/meta values: editable via ACF (simple fields).
+$cd_bdp_category = 'LOCAL SEO';
+$cats = get_the_category($post_id);
+if (!empty($cats) && !is_wp_error($cats) && !empty($cats[0]->name)) {
+  $cd_bdp_category = (string) $cats[0]->name;
+}
 
-$cd_bdp_intro = craftdigitally_get_acf('blog_intro', get_the_excerpt(), $post_id);
+$cd_bdp_title = get_the_title($post_id);
+$author_id = (int) get_post_field('post_author', $post_id);
+$author_name = trim((string) get_the_author_meta('display_name', $author_id));
+$author_name = $author_name !== '' ? $author_name : 'Admin';
+$cd_bdp_author_default = 'By ' . $author_name;
+$cd_bdp_date_default = get_the_date('F j, Y', $post_id);
 
-$cd_bdp_local_seo_title = craftdigitally_get_acf('blog_local_seo_title', 'What Is Local SEO?', $post_id);
-$cd_bdp_local_seo_html = craftdigitally_get_acf('blog_local_seo_html', '', $post_id);
+// Basic reading time (words / 200 wpm).
+$cd_bdp_word_count = str_word_count(wp_strip_all_tags((string) get_post_field('post_content', $post_id)));
+$cd_bdp_minutes = max(1, (int) ceil($cd_bdp_word_count / 200));
+$cd_bdp_read_time_default = $cd_bdp_minutes . ' min read';
 
-$cd_bdp_essential_title = craftdigitally_get_acf('blog_essential_title', 'Why Local SEO Is Essential in 2025', $post_id);
-$cd_bdp_essential_intro = craftdigitally_get_acf('blog_essential_intro', '', $post_id);
-$cd_bdp_essential_html = craftdigitally_get_acf('blog_essential_html', '', $post_id);
+$cd_bdp_author = craftdigitally_get_acf('blog_author', $cd_bdp_author_default, $post_id);
+$cd_bdp_date = craftdigitally_get_acf('blog_date', $cd_bdp_date_default, $post_id);
+$cd_bdp_read_time = craftdigitally_get_acf('blog_read_time', $cd_bdp_read_time_default, $post_id);
 
-$cd_bdp_benefits_title = craftdigitally_get_acf('blog_benefits_title', 'Key Benefits of Local SEO', $post_id);
-$cd_bdp_benefits_html = craftdigitally_get_acf('blog_benefits_html', '', $post_id);
-
-$cd_bdp_factors_title = craftdigitally_get_acf('blog_factors_title', 'Important Local SEO Ranking Factors', $post_id);
-$cd_bdp_factors_intro = craftdigitally_get_acf('blog_factors_intro', 'Google considers several factors before ranking a local business:', $post_id);
-$cd_bdp_factors_html = craftdigitally_get_acf('blog_factors_html', '', $post_id);
-
-$cd_bdp_improve_title = craftdigitally_get_acf('blog_improve_title', 'How to Improve Your Local SEO', $post_id);
-$cd_bdp_improve_html = craftdigitally_get_acf('blog_improve_html', '', $post_id);
-
-$cd_bdp_testimonial_quote = craftdigitally_get_acf('blog_testimonial_quote', '', $post_id);
-
-$cd_bdp_final_title = craftdigitally_get_acf('blog_final_title', 'Final Thoughts', $post_id);
-$cd_bdp_final_html = craftdigitally_get_acf('blog_final_html', '', $post_id);
+// Featured image (fallback to theme asset).
+$cd_bdp_featured_img = get_the_post_thumbnail_url($post_id, 'large');
+$cd_bdp_featured_img = $cd_bdp_featured_img ? $cd_bdp_featured_img : (get_template_directory_uri() . '/assets/images/bookimage.png');
+$thumb_id = (int) get_post_thumbnail_id($post_id);
+$cd_bdp_featured_img_alt = $thumb_id > 0 ? (string) get_post_meta($thumb_id, '_wp_attachment_image_alt', true) : '';
+$cd_bdp_featured_img_alt = trim($cd_bdp_featured_img_alt) !== '' ? $cd_bdp_featured_img_alt : $cd_bdp_title;
 
 $cd_bdp_shared_cta = craftdigitally_get_shared_cta_data();
-$cd_bdp_cta_title = $cd_bdp_shared_cta['title'];
-$cd_bdp_cta_text = $cd_bdp_shared_cta['subtitle'];
-$cd_bdp_cta_btn_label = $cd_bdp_shared_cta['button_label'];
+$cd_bdp_cta_title = craftdigitally_get_acf('blog_cta_title', $cd_bdp_shared_cta['title'], $post_id);
+$cd_bdp_cta_text = craftdigitally_get_acf('blog_cta_text', $cd_bdp_shared_cta['subtitle'], $post_id);
+$cd_bdp_cta_btn_label = craftdigitally_get_acf('blog_cta_button_label', $cd_bdp_shared_cta['button_label'], $post_id);
+
+// Right sidebar CTA (separate fields).
+$cd_bdp_sidebar_cta_title = craftdigitally_get_acf('blog_sidebar_cta_title', $cd_bdp_cta_title, $post_id);
+$cd_bdp_sidebar_cta_text = craftdigitally_get_acf('blog_sidebar_cta_text', $cd_bdp_cta_text, $post_id);
+$cd_bdp_sidebar_cta_btn_label = craftdigitally_get_acf('blog_sidebar_cta_button_label', $cd_bdp_cta_btn_label, $post_id);
 
 $cd_bdp_share_url = esc_url_raw(get_permalink($post_id));
 $cd_bdp_share_title = wp_strip_all_tags($cd_bdp_title);
 
-// If ACF content is empty, use post content
-if (empty($cd_bdp_local_seo_html) && empty($cd_bdp_essential_html) && empty($cd_bdp_benefits_html)) {
-  $cd_bdp_local_seo_html = apply_filters('the_content', get_the_content());
-}
+$cd_bdp_raw_content = apply_filters('the_content', get_post_field('post_content', $post_id));
+$cd_bdp_raw_content = craftdigitally_bdp_strip_legacy_demo_lead($cd_bdp_raw_content);
+$cd_bdp_built = craftdigitally_bdp_build_structured_content_from_post_html($cd_bdp_raw_content);
+$cd_bdp_toc = isset($cd_bdp_built['toc']) ? $cd_bdp_built['toc'] : array();
+$cd_bdp_intro_html = isset($cd_bdp_built['intro_html']) ? $cd_bdp_built['intro_html'] : '';
+$cd_bdp_sections = isset($cd_bdp_built['sections']) ? $cd_bdp_built['sections'] : array();
 ?>
 
 <div class="bdp-page">
@@ -106,9 +104,9 @@ if (empty($cd_bdp_local_seo_html) && empty($cd_bdp_essential_html) && empty($cd_
             <div class="bdp-frame-3"></div>
             <div class="bdp-flexcontainer">
               <ol class="bdp-toc-list">
-                <?php foreach ($cd_bdp_toc as $idx => $toc) : ?>
+                <?php foreach ($cd_bdp_toc as $toc_item) : ?>
                   <li class="bdp-toc-item">
-                    <a class="bdp-toc-link" href="#<?php echo esc_attr(craftdigitally_bdp_toc_section_anchor_id((int) $idx)); ?>"><?php echo esc_html(isset($toc['text']) ? $toc['text'] : ''); ?></a>
+                    <a class="bdp-toc-link" href="#<?php echo esc_attr($toc_item['id']); ?>"><?php echo esc_html($toc_item['text']); ?></a>
                   </li>
                 <?php endforeach; ?>
               </ol>
@@ -117,84 +115,33 @@ if (empty($cd_bdp_local_seo_html) && empty($cd_bdp_essential_html) && empty($cd_
           <?php endif; ?>
         </div>
         <div class="bdp-content-2" id="bdp-blog-content">
-          <?php if (!empty($cd_bdp_intro)): ?>
+          <?php if (!empty(trim(wp_strip_all_tags($cd_bdp_intro_html)))) : ?>
           <div class="bdp-div-2">
             <p class="bdp-text-wrapper-4">
-              <?php echo nl2br(esc_html($cd_bdp_intro)); ?>
+              <?php echo wp_kses_post($cd_bdp_intro_html); ?>
             </p>
           </div>
           <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_local_seo_title) || !empty($cd_bdp_local_seo_html)): ?>
-          <div class="bdp-div-2" id="bdp-section-local-seo">
-            <div class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_local_seo_title); ?></div>
-            <div class="bdp-flexcontainer-2">
-              <?php echo wp_kses_post($cd_bdp_local_seo_html); ?>
-            </div>
-          </div>
+
+          <?php if (!empty($cd_bdp_sections)) : ?>
+            <?php foreach ($cd_bdp_sections as $i => $section) : ?>
+              <div class="bdp-div-2" id="<?php echo esc_attr($section['id']); ?>">
+                <div class="bdp-text-wrapper-5"><?php echo esc_html($section['title']); ?></div>
+                <div class="bdp-flexcontainer-2">
+                  <?php echo wp_kses_post($section['html']); ?>
+                </div>
+              </div>
+
+              <?php if (($i + 1) === 3) : ?>
+                <div class="bdp-img">
+                  <?php if (!empty($cd_bdp_featured_img)) : ?>
+                    <img src="<?php echo esc_url($cd_bdp_featured_img); ?>" alt="<?php echo esc_attr($cd_bdp_featured_img_alt); ?>" style="width: 100%; height: 100%; object-fit: cover;" />
+                  <?php endif; ?>
+                </div>
+              <?php endif; ?>
+            <?php endforeach; ?>
           <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_essential_title) || !empty($cd_bdp_essential_html)): ?>
-          <div class="bdp-div-2" id="bdp-section-essential">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_essential_title); ?></p>
-            <?php if (!empty($cd_bdp_essential_intro)): ?>
-            <p class="bdp-p">
-              <?php echo esc_html($cd_bdp_essential_intro); ?>
-            </p>
-            <?php endif; ?>
-            <div class="bdp-auto-flex">
-              <?php echo wp_kses_post($cd_bdp_essential_html); ?>
-            </div>
-          </div>
-          <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_benefits_title) || !empty($cd_bdp_benefits_html)): ?>
-          <div class="bdp-div-2" id="bdp-section-benefits">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_benefits_title); ?></p>
-            <div class="bdp-auto">
-              <?php echo wp_kses_post($cd_bdp_benefits_html); ?>
-            </div>
-          </div>
-          <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_factors_title) || !empty($cd_bdp_factors_html)): ?>
-          <div class="bdp-div-2" id="bdp-section-factors">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_factors_title); ?></p>
-            <?php if (!empty($cd_bdp_factors_intro)): ?>
-            <p class="bdp-p"><?php echo esc_html($cd_bdp_factors_intro); ?></p>
-            <?php endif; ?>
-            <div class="bdp-auto-2">
-              <?php echo wp_kses_post($cd_bdp_factors_html); ?>
-            </div>
-          </div>
-          <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_improve_title) || !empty($cd_bdp_improve_html)): ?>
-          <div class="bdp-div-2" id="bdp-section-improve">
-            <p class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_improve_title); ?></p>
-            <div class="bdp-auto-3">
-              <?php echo wp_kses_post($cd_bdp_improve_html); ?>
-            </div>
-          </div>
-          <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_testimonial_quote)): ?>
-          <div class="bdp-testimonial-card">
-            <p class="bdp-text-wrapper-9">
-              <?php echo nl2br(esc_html($cd_bdp_testimonial_quote)); ?>
-            </p>
-          </div>
-          <?php endif; ?>
-          
-          <?php if (!empty($cd_bdp_final_title) || !empty($cd_bdp_final_html)): ?>
-          <div class="bdp-div-3" id="bdp-section-final">
-            <div class="bdp-text-wrapper-5"><?php echo esc_html($cd_bdp_final_title); ?></div>
-            <div class="bdp-flexcontainer-8">
-              <?php echo wp_kses_post($cd_bdp_final_html); ?>
-            </div>
-          </div>
-          <?php endif; ?>
-          
+
           <?php if (!empty($cd_bdp_cta_title)): ?>
           <div class="bdp-cta">
             <div class="bdp-frame-wrapper">
@@ -222,21 +169,21 @@ if (empty($cd_bdp_local_seo_html) && empty($cd_bdp_essential_html) && empty($cd_
           ?>
         </div>
         <div class="bdp-right">
-          <?php if (!empty($cd_bdp_cta_title)): ?>
+          <?php if (!empty($cd_bdp_sidebar_cta_title)): ?>
           <div class="bdp-cta-3">
             <div class="bdp-frame-wrapper">
               <div class="bdp-content-wrapper">
                 <div class="bdp-div-3">
-                  <p class="bdp-text-wrapper-4"><?php echo esc_html($cd_bdp_cta_title); ?></p>
-                  <?php if (!empty($cd_bdp_cta_text)): ?>
+                  <p class="bdp-text-wrapper-4"><?php echo esc_html($cd_bdp_sidebar_cta_title); ?></p>
+                  <?php if (!empty($cd_bdp_sidebar_cta_text)): ?>
                   <p class="bdp-p">
-                    <?php echo esc_html($cd_bdp_cta_text); ?>
+                    <?php echo esc_html($cd_bdp_sidebar_cta_text); ?>
                   </p>
                   <?php endif; ?>
                 </div>
               </div>
             </div>
-            <a href="#contact" class="bdp-button"><div class="bdp-text-wrapper-10"><?php echo esc_html($cd_bdp_cta_btn_label); ?></div></a>
+            <a href="#contact" class="bdp-button"><div class="bdp-text-wrapper-10"><?php echo esc_html($cd_bdp_sidebar_cta_btn_label); ?></div></a>
           </div>
           <?php endif; ?>
           <?php

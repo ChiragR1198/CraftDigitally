@@ -570,19 +570,15 @@ add_action('acf/init', function () {
     'key' => craftdigitally_acf_group_key('case_study_detail_page'),
     'title' => 'CraftDigitally: Case Study Detail Page',
     'fields' => array(
-      craftdigitally_acf_image_field('cs_detail_hero_logo', 'cs_detail_hero_logo', 'Hero Logo'),
+      craftdigitally_acf_wrap(craftdigitally_acf_image_field('cs_detail_hero_logo', 'cs_detail_hero_logo', 'Hero Logo'), 50),
       craftdigitally_acf_text_field('cs_detail_hero_title', 'cs_detail_hero_title', 'Hero Title (HTML allowed for <br />)', 'textarea'),
-      craftdigitally_acf_repeater_field(
-        'cs_detail_metrics',
-        'cs_detail_metrics',
-        'Hero Metrics (3 items)',
-        array(
-          craftdigitally_acf_text_field('cs_detail_metric_value', 'value', 'Value (e.g. 2,117%)', 'text'),
-          craftdigitally_acf_text_field('cs_detail_metric_label', 'label', 'Label', 'text'),
-        ),
-        0
-      ),
-      craftdigitally_acf_text_field('cs_detail_hero_button_label', 'cs_detail_hero_button_label', 'Hero Button Label', 'text'),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_hero_button_label', 'cs_detail_hero_button_label', 'Hero Button Label', 'text'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_metric_1_value', 'cs_detail_metric_1_value', 'Metric 1 Value (e.g. 450%)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_metric_1_label', 'cs_detail_metric_1_label', 'Metric 1 Label', 'text'), 75),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_metric_2_value', 'cs_detail_metric_2_value', 'Metric 2 Value (e.g. 12X)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_metric_2_label', 'cs_detail_metric_2_label', 'Metric 2 Label', 'text'), 75),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_metric_3_value', 'cs_detail_metric_3_value', 'Metric 3 Value (e.g. 50+)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_detail_metric_3_label', 'cs_detail_metric_3_label', 'Metric 3 Label', 'text'), 75),
 
       craftdigitally_acf_text_field('cs_detail_overview', 'cs_detail_overview', 'Overview Text', 'textarea'),
 
@@ -1558,132 +1554,47 @@ At CraftDigitally, we don\'t just "do SEO." We engineer your online presence to 
     'title' => 'CraftDigitally: Blog Post Content',
     'fields' => array(
       craftdigitally_acf_message_field(
-        'blog_post_note',
-        'How this works',
-        '<strong>These fields control the Blog list + Blog detail layout for this post.</strong> If you leave fields empty, the theme will use the existing hardcoded design as fallback.'
+        'blog_post_note_simple',
+        'Blog fields (simple)',
+        '<strong>Only the fields below are used for the Blog Detail layout.</strong>'
       ),
 
-      craftdigitally_acf_tab_field('blog_post_tab_meta', 'Meta', 'top'),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_title', 'blog_title', 'Title (optional override)', 'text'), 100),
-      craftdigitally_acf_wrap(craftdigitally_acf_image_field('blog_featured_image', 'blog_featured_image', 'Blog Image (used in list + detail)'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_featured_image_alt', 'blog_featured_image_alt', 'Blog Image Alt', 'text'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_category', 'blog_category', 'Category', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_date', 'blog_date', 'Date (text)', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_read_time', 'blog_read_time', 'Read Time', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author', 'blog_author', 'Author (e.g. By Admin)', 'text'), 25),
+      // HERO (only these 3)
+      craftdigitally_acf_tab_field('blog_post_tab_hero_simple', 'Hero Banner', 'top'),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author', 'blog_author', 'Author (e.g. By Admin)', 'text'), 34),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_date', 'blog_date', 'Date (e.g. February 27, 2026)', 'text'), 33),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_read_time', 'blog_read_time', 'Read Time (e.g. 1 min read)', 'text'), 33),
 
-      craftdigitally_acf_tab_field('blog_post_tab_toc', 'TOC', 'top'),
-      craftdigitally_acf_repeater_field(
-        'blog_toc',
-        'blog_toc',
-        'Table of Contents Items',
-        array(
-          craftdigitally_acf_text_field('blog_toc_item', 'text', 'Item', 'text'),
-        ),
-        0
-      ),
+      // CTA blocks (center + right are separate)
+      craftdigitally_acf_tab_field('blog_post_tab_cta_simple', 'CTA Blocks', 'top'),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_cta_title', 'blog_cta_title', 'Bottom Center CTA Title', 'text'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_cta_button_label', 'blog_cta_button_label', 'Bottom Center CTA Button Label', 'text'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_cta_text', 'blog_cta_text', 'Bottom Center CTA Text', 'textarea'), 100),
 
-      craftdigitally_acf_tab_field('blog_post_tab_intro', 'Intro', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_intro', 'blog_intro', 'Introduction Text', 'textarea'),
-        "If you run a local business in 2025, competition isn't what it used to be. Customers now rely on Google to decide where to shop, which doctor to trust, or which service provider to call. They compare reviews, check hours, and look for the highest-rated businesses — all within seconds."
-      ),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_sidebar_cta_title', 'blog_sidebar_cta_title', 'Right Sidebar CTA Title', 'text'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_sidebar_cta_button_label', 'blog_sidebar_cta_button_label', 'Right Sidebar CTA Button Label', 'text'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_sidebar_cta_text', 'blog_sidebar_cta_text', 'Right Sidebar CTA Text', 'textarea'), 100),
 
-      craftdigitally_acf_tab_field('blog_post_tab_s1', 'Section 1', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_local_seo_title', 'blog_local_seo_title', 'Title', 'text'),
-        'What Is Local SEO?'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_local_seo_html', 'blog_local_seo_html', 'Content', 'wysiwyg'),
-        '<p class="bdp-text"><span class="bdp-text-wrapper-6">Local SEO (Local Search Engine Optimization) is the process of improving your online presence so your business appears in </span><span class="bdp-text-wrapper-7">local Google searches,</span><span class="bdp-text-wrapper-6"> Google Maps, and the Local 3-Pack.</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">When someone searches for &quot;salon near me,&quot; &quot;best bakery in Ahmedabad,&quot; or &quot;AC repair nearby,&quot; Google shows a list of top local businesses based on relevance, reviews, and proximity. Local SEO ensures </span><span class="bdp-text-wrapper-7">your business shows up in these results</span><span class="bdp-text-wrapper-6">, giving you maximum visibility at the right time.</span></p>'
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_s2', 'Section 2', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_essential_title', 'blog_essential_title', 'Title', 'text'),
-        'Why Local SEO Is Essential in 2025'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_essential_intro', 'blog_essential_intro', 'Intro', 'textarea'),
-        "Search behaviour continues to shift, and local businesses must keep up. Here's why Local SEO matters more than ever:"
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_essential_html', 'blog_essential_html', 'Content', 'wysiwyg'),
-        '<div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">People Trust Search Engines Over Traditional Advertising</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Customers rely on online results, reviews, and ratings to choose businesses. If you&#039;re not visible, you&#039;re losing opportunities.</span></p></div><div class="bdp-flexcontainer-4"><p class="bdp-text"><span class="bdp-text-wrapper-7">&quot;Near Me&quot; Searches Are Growing Rapidly</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">More people use mobile searches like:</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">&quot;best dentist near me&quot;</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">&quot;urgent care open now&quot;</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">&quot;cafe near me with wifi&quot;</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Google prioritises local results that are optimized.</span></p></div><div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">Google&#039;s Local Algorithms Are Smarter</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Google uses AI to understand user intent better, showing hyper-relevant businesses. Only optimized businesses rank well.</span></p></div><div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">Competition Is Increasing</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">More businesses are investing in online visibility — if you aren&#039;t, your competitors will dominate the results.</span></p></div>'
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_s3', 'Section 3', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_benefits_title', 'blog_benefits_title', 'Title', 'text'),
-        'Key Benefits of Local SEO'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_benefits_html', 'blog_benefits_html', 'Content', 'wysiwyg'),
-        '<div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">1. Increased Local Visibility</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Appear in Google&#039;s Local Pack and Maps results, where most local clicks happen.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">2. More Qualified Leads</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">People searching locally are ready to take action — call, visit, or book.</span></p></div><div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">3. Stronger Trust &amp; Reputation</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Consistent reviews, accurate information, and updated profiles make you look more reliable.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">4. Boost in Store Visits &amp; Calls</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Local search directly influences in-person visits and enquiries.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">5. Cost-Effective Long-Term Growth</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Unlike paid ads, Local SEO delivers results for months and years.</span></p></div>'
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_s4', 'Section 4', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_factors_title', 'blog_factors_title', 'Title', 'text'),
-        'Important Local SEO Ranking Factors'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_factors_intro', 'blog_factors_intro', 'Intro', 'textarea'),
-        'Google considers several factors before ranking a local business:'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_factors_html', 'blog_factors_html', 'Content', 'wysiwyg'),
-        '<div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">Google Business Profile Optimization</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Accurate information, photos, updates, and category selection matter.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">NAP Consistency (Name, Address, Phone)</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Your business information must match across all platforms.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">Reviews &amp; Ratings</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">High ratings and recent reviews help you rank higher and convert better.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">Local Citations</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Listings on trusted directories increase authority.</span></p></div><div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">On-Page Local SEO</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Optimized pages with local keywords help Google understand your relevance.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">Backlinks from Local Websites</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Local mentions build trust and ranking power.</span></p></div>'
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_s5', 'Section 5', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_improve_title', 'blog_improve_title', 'Title', 'text'),
-        'How to Improve Your Local SEO'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_improve_html', 'blog_improve_html', 'Content', 'wysiwyg'),
-        '<div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">1. Optimize Your Google Business Profile</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Add photos, services, categories, posts, and keep it updated regularly.</span></p></div><div class="bdp-flexcontainer-6"><p class="bdp-text"><span class="bdp-text-wrapper-7">2. Use Local Keywords</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Examples:</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">&quot;best coaching classes in Surat&quot;</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">&quot;plumber in South Delhi&quot;</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">&quot;wedding photographer in Chandigarh&quot;</span></p></div><div class="bdp-flexcontainer-3"><p class="bdp-text"><span class="bdp-text-wrapper-7">3. Ask for Reviews Regularly</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Happy customers are the best marketing asset. Respond to each review professionally.</span></p></div><div class="bdp-flexcontainer-7"><p class="bdp-text"><span class="bdp-text-wrapper-7">4. Build Local Citations</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Get listed on:</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">JustDial</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Sulekha</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">IndiaMart</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Niche directories</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">5. Improve Your Website&#039;s On-Page SEO</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Local schema, internal links, meta tags, and fast loading speeds matter.</span></p></div><div class="bdp-flexcontainer-5"><p class="bdp-text"><span class="bdp-text-wrapper-7">6. Publish Local-Focused Content</span></p><p class="bdp-text"><span class="bdp-text-wrapper-6">Create blogs and guides that answer your customers&#039; questions.</span></p></div>'
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_testimonial', 'Testimonial', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_testimonial_quote', 'blog_testimonial_quote', 'Testimonial Quote', 'textarea'),
-        "Before working with CraftDigitally, SEO felt like a fog I couldn't navigate. Their process made everything so clear and actionable. I left with not only a visible online presence but a genuine sense of confidence in how I show up digitally"
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_final', 'Final', 'top'),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_final_title', 'blog_final_title', 'Final Thoughts Title', 'text'),
-        'Final Thoughts'
-      ),
-      craftdigitally_acf_default(
-        craftdigitally_acf_text_field('blog_final_html', 'blog_final_html', 'Final Thoughts Content', 'wysiwyg'),
-        '<p class="bdp-p"><span class="bdp-span">Local SEO is no longer optional — it&#039;s the foundation of online visibility for small businesses. With more people relying on Google to find services nearby, staying optimized gives you a competitive edge.</span></p><p class="bdp-p"><span class="bdp-span">If you want consistent leads, stronger visibility, and long-term growth, Local SEO should be a top priority for your business in 2025.</span></p>'
-      ),
-
-      craftdigitally_acf_tab_field('blog_post_tab_cta', 'CTA + Author', 'top'),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_cta_title', 'blog_cta_title', 'CTA Title', 'text'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_cta_button_label', 'blog_cta_button_label', 'CTA Button Label', 'text'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_cta_text', 'blog_cta_text', 'CTA Text', 'textarea'), 100),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_tag', 'blog_author_tag', 'Author Tag', 'text'), 33),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_name', 'blog_author_name', 'Author Name', 'text'), 33),
-      craftdigitally_acf_wrap(craftdigitally_acf_image_field('blog_author_avatar', 'blog_author_avatar', 'Author Photo'), 34),
-      craftdigitally_acf_wrap(craftdigitally_acf_image_field('blog_author_social_image', 'blog_author_social_image', 'Author Social Image (legacy)'), 34),
+      // AUTHOR CARD
+      craftdigitally_acf_tab_field('blog_post_tab_author_simple', 'Author', 'top'),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_tag', 'blog_author_tag', 'Author Tag (e.g. LOCAL SEO EXPERT)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_name', 'blog_author_name', 'Author Name', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_image_field('blog_author_avatar', 'blog_author_avatar', 'Author Image'), 50),
       craftdigitally_acf_wrap(craftdigitally_acf_text_field('blog_author_bio', 'blog_author_bio', 'Author Bio', 'textarea'), 100),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_linkedin_url', 'blog_author_linkedin_url', 'Author LinkedIn URL'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_x_url', 'blog_author_x_url', 'Author X (Twitter) URL'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_facebook_url', 'blog_author_facebook_url', 'Author Facebook URL'), 50),
-      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_instagram_url', 'blog_author_instagram_url', 'Author Instagram URL'), 50),
+ 
+      craftdigitally_acf_tab_field('blog_post_tab_author_links_simple', 'Author Links', 'top'),
+      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_linkedin_url', 'blog_author_linkedin_url', 'LinkedIn URL'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_x_url', 'blog_author_x_url', 'X (Twitter) URL'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_facebook_url', 'blog_author_facebook_url', 'Facebook URL'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_url_field('blog_author_whatsapp_url', 'blog_author_whatsapp_url', 'WhatsApp URL'), 25),
     ),
     'location' => craftdigitally_acf_location_post_type('post', array('blog')),
     'position' => 'normal',
-    'style' => 'seamless',
+    'style' => 'default',
     'label_placement' => 'top',
     'instruction_placement' => 'label',
-    // Disable this group so default WordPress post editor is used without ACF tabs.
-    'active' => false,
+    // Enable ACF fields on WP post edit so admin can configure blog layout.
+    'active' => true,
   ));
 
   /**
@@ -1702,20 +1613,14 @@ At CraftDigitally, we don\'t just "do SEO." We engineer your online presence to 
 
       // HERO TAB
       craftdigitally_acf_tab_field('cs_tab_hero', 'Hero', 'top'),
-      craftdigitally_acf_wrap(craftdigitally_acf_image_field('cs_hero_logo', 'cs_hero_logo', 'Hero Logo'), 40),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_hero_title', 'cs_hero_title', 'Hero Title (HTML allowed)', 'textarea'), 60),
-      craftdigitally_acf_repeater_field(
-        'cs_metrics',
-        'cs_metrics',
-        'Hero Metrics',
-        array(
-          craftdigitally_acf_text_field('cs_metric_value', 'value', 'Value', 'text'),
-          craftdigitally_acf_text_field('cs_metric_label', 'label', 'Label', 'text'),
-        ),
-        0,
-        10
-      ),
-      craftdigitally_acf_text_field('cs_hero_button_label', 'cs_hero_button_label', 'Hero Button Label', 'text'),
+      craftdigitally_acf_wrap(craftdigitally_acf_image_field('cs_hero_logo', 'cs_hero_logo', 'Hero Logo'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_hero_button_label', 'cs_hero_button_label', 'Hero Button Label', 'text'), 50),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_metric_1_value', 'cs_metric_1_value', 'Metric 1 Value (e.g. 450%)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_metric_1_label', 'cs_metric_1_label', 'Metric 1 Label', 'text'), 75),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_metric_2_value', 'cs_metric_2_value', 'Metric 2 Value (e.g. 12X)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_metric_2_label', 'cs_metric_2_label', 'Metric 2 Label', 'text'), 75),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_metric_3_value', 'cs_metric_3_value', 'Metric 3 Value (e.g. 50+)', 'text'), 25),
+      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_metric_3_label', 'cs_metric_3_label', 'Metric 3 Label', 'text'), 75),
 
       // OVERVIEW + META TAB
       craftdigitally_acf_tab_field('cs_tab_overview', 'Overview & Meta', 'top'),
@@ -1723,26 +1628,6 @@ At CraftDigitally, we don\'t just "do SEO." We engineer your online presence to 
       craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_industry', 'cs_industry', 'Industry', 'text'), 33),
       craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_company_name', 'cs_company_name', 'Company Name', 'text'), 33),
       craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_services', 'cs_services', 'Services', 'text'), 34),
-
-      // PROBLEM TAB
-      craftdigitally_acf_tab_field('cs_tab_problem', 'Problem', 'top'),
-      craftdigitally_acf_text_field('cs_problem_title', 'cs_problem_title', 'Problem Title', 'text'),
-      craftdigitally_acf_repeater_field(
-        'cs_problem_paras',
-        'cs_problem_paras',
-        'Problem Paragraphs',
-        array(
-          craftdigitally_acf_text_field('cs_problem_text', 'text', 'Paragraph Text', 'textarea'),
-        ),
-        0
-      ),
-
-      // SOLUTION TAB
-      craftdigitally_acf_tab_field('cs_tab_solution', 'Solution', 'top'),
-      craftdigitally_acf_text_field('cs_solution_title', 'cs_solution_title', 'Solution Title', 'text'),
-      craftdigitally_acf_text_field('cs_solution_intro', 'cs_solution_intro', 'Solution Intro', 'textarea'),
-      craftdigitally_acf_text_field('cs_solution_lead', 'cs_solution_lead', 'Solution Lead Text', 'text'),
-      craftdigitally_acf_text_field('cs_solution_html', 'cs_solution_html', 'Solution Content (HTML)', 'wysiwyg'),
 
       // IMAGE TAB
       craftdigitally_acf_tab_field('cs_tab_image', 'Image', 'top'),
@@ -1774,17 +1659,6 @@ At CraftDigitally, we don\'t just "do SEO." We engineer your online presence to 
       craftdigitally_acf_text_field('cs_related_subtitle', 'cs_related_subtitle', 'Related Case Studies Subtitle (HTML allowed)', 'textarea'),
       craftdigitally_acf_number_field('cs_related_count', 'cs_related_count', 'Related Case Studies Count'),
       craftdigitally_acf_text_field('cs_related_read_more_label', 'cs_related_read_more_label', 'Related Read More Label', 'text'),
-
-      // FORM TAB
-      craftdigitally_acf_tab_field('cs_tab_form', 'Form', 'top'),
-      craftdigitally_acf_text_field('cs_form_title', 'cs_form_title', 'Form Title', 'text'),
-      craftdigitally_acf_text_field('cs_form_subtitle', 'cs_form_subtitle', 'Form Subtitle', 'textarea'),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_form_name_placeholder', 'cs_form_name_placeholder', 'Form: Name Placeholder', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_form_phone_placeholder', 'cs_form_phone_placeholder', 'Form: Phone Placeholder', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_form_email_placeholder', 'cs_form_email_placeholder', 'Form: Email Placeholder', 'text'), 25),
-      craftdigitally_acf_wrap(craftdigitally_acf_text_field('cs_form_service_placeholder', 'cs_form_service_placeholder', 'Form: Service Placeholder', 'text'), 25),
-      craftdigitally_acf_text_field('cs_form_message_placeholder', 'cs_form_message_placeholder', 'Form: Message Placeholder', 'text'),
-      craftdigitally_acf_text_field('cs_form_submit_label', 'cs_form_submit_label', 'Form: Submit Label', 'text'),
     ),
     'location' => craftdigitally_acf_location_post_type('case_study', array('case-studies', 'case-study')),
     'position' => 'normal',

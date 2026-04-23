@@ -117,13 +117,10 @@ function craftdigitally_create_default_posts() {
     'How to Get More Reviews Without Sounding Pushy',
   );
 
-  $excerpt = "If you run a small or medium business today, competing locally is tougher than ever. Customers don't browse directories anymore — they search on Google, check reviews, and decide fast.";
-
   foreach ($titles as $t) {
     $post_id = wp_insert_post(array(
       'post_title' => $t,
-      'post_content' => '<p>' . esc_html($excerpt) . '</p>',
-      'post_excerpt' => $excerpt,
+      'post_content' => '',
       'post_status' => 'draft',
       'post_type' => 'post',
       'post_author' => $author_id,
@@ -145,7 +142,6 @@ function craftdigitally_create_default_posts() {
       update_field('blog_author', $by, $post_id);
       update_field('blog_date', $today, $post_id);
       update_field('blog_read_time', '3 min read', $post_id);
-      update_field('blog_intro', $excerpt, $post_id);
       update_field('blog_cta_title', 'Ready to Dominate Your Competition?', $post_id);
       update_field('blog_cta_text', 'Craft Digitally transformed our online presence completely. Our website now ranks on the first page for our target keywords', $post_id);
       update_field('blog_cta_button_label', 'Book a Free Consult', $post_id);
@@ -165,4 +161,56 @@ function craftdigitally_create_default_posts() {
   update_option('craftdigitally_default_posts_created', '1');
   return true;
 }
+
+/**
+ * One-time cleanup: older demo seeding stored the intro copy in `post_excerpt`.
+ * Blog posts no longer use manual excerpts in this theme.
+ */
+function craftdigitally_cleanup_demo_post_excerpts_once() {
+  if (!is_admin() || !current_user_can('manage_options')) {
+    return;
+  }
+
+  if (get_option('craftdigitally_cleared_demo_post_excerpts_v1', false)) {
+    return;
+  }
+
+  global $wpdb;
+
+  $needle = "If you run a small or medium business today, competing locally is tougher than ever. Customers don't browse directories anymore — they search on Google, check reviews, and decide fast.";
+
+  $ids = $wpdb->get_col(
+    $wpdb->prepare(
+      "SELECT ID FROM {$wpdb->posts} WHERE post_type = %s AND post_status IN ('publish','draft','pending','private','future') AND post_excerpt = %s",
+      'post',
+      $needle
+    )
+  );
+
+  if (!empty($ids)) {
+    foreach ($ids as $id) {
+      $id = (int) $id;
+      if ($id <= 0) {
+        continue;
+      }
+
+      wp_update_post(
+        array(
+          'ID' => $id,
+          'post_excerpt' => '',
+        )
+      );
+
+      if (function_exists('get_field') && function_exists('update_field')) {
+        $intro = get_field('blog_intro', $id);
+        if (is_string($intro) && $intro === $needle) {
+          update_field('blog_intro', '', $id);
+        }
+      }
+    }
+  }
+
+  update_option('craftdigitally_cleared_demo_post_excerpts_v1', '1', false);
+}
+add_action('admin_init', 'craftdigitally_cleanup_demo_post_excerpts_once', 20);
 

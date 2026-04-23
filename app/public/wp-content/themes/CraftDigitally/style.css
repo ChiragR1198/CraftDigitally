@@ -4138,6 +4138,37 @@ body.elementor-template-canvas .site-footer {
   gap: 64px !important;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 640px;
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 0;
+}
+
+/* Case Study: default editor content should never overflow the container */
+.case-study-detail .content-section-container .case-study-editor-content,
+.case-study-detail .content-section-container .case-study-editor-content * {
+  max-width: 100%;
+}
+.case-study-detail .content-section-container .case-study-editor-content {
+  width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.case-study-detail .content-section-container .case-study-editor-content img,
+.case-study-detail .content-section-container .case-study-editor-content video,
+.case-study-detail .content-section-container .case-study-editor-content iframe,
+.case-study-detail .content-section-container .case-study-editor-content embed,
+.case-study-detail .content-section-container .case-study-editor-content object {
+  max-width: 100%;
+  height: auto;
+}
+.case-study-detail .content-section-container .case-study-editor-content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .case-study-detail .overview {
@@ -8371,6 +8402,7 @@ body.elementor-template-canvas .site-footer {
   flex: 0 0 auto;
   display: flex;
   position: relative;
+  min-width: 0;
 }
 
 .bdp-page .bdp-left {
@@ -8378,11 +8410,17 @@ body.elementor-template-canvas .site-footer {
   flex-direction: column;
   max-width: 310px;
   width: 310px;
+  min-width: 0;
+  box-sizing: border-box;
   align-items: flex-start;
+  align-self: flex-start;
+  height: fit-content;
   gap: 8px;
   padding: 24px;
   position: relative;
   background-color: #e8e5ec;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .bdp-page .bdp-frame-2 {
@@ -8392,11 +8430,14 @@ body.elementor-template-canvas .site-footer {
   gap: 8px;
   position: relative;
   flex: 0 0 auto;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .bdp-page .bdp-text-wrapper-3 {
   position: relative;
   width: 261px;
+  max-width: 100%;
   margin-top: -1.00px;
   font-family: Mona Sans, Helvetica;
   font-weight: 600;
@@ -8417,7 +8458,8 @@ body.elementor-template-canvas .site-footer {
 
 .bdp-page .bdp-flexcontainer {
   width: 261px;
-  min-height: 224px;
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -8451,6 +8493,10 @@ body.elementor-template-canvas .site-footer {
   text-decoration: none;
   display: block;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   padding: 6px 8px;
   margin: 0;
   box-sizing: border-box;
@@ -8526,6 +8572,45 @@ body.elementor-template-canvas .site-footer {
   align-items: flex-start;
   position: relative;
   width: 100%;
+  /* Prevent flex children from forcing horizontal overflow */
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* WordPress post content inside the blog detail column */
+.bdp-page .bdp-content-2 .entry-content,
+.bdp-page .bdp-content-2 p,
+.bdp-page .bdp-content-2 li,
+.bdp-page .bdp-content-2 h1,
+.bdp-page .bdp-content-2 h2,
+.bdp-page .bdp-content-2 h3,
+.bdp-page .bdp-content-2 h4,
+.bdp-page .bdp-content-2 h5,
+.bdp-page .bdp-content-2 h6 {
+  max-width: 100%;
+}
+
+.bdp-page .bdp-content-2 img,
+.bdp-page .bdp-content-2 video,
+.bdp-page .bdp-content-2 iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+.bdp-page .bdp-content-2 pre,
+.bdp-page .bdp-content-2 code {
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.bdp-page .bdp-content-2 table {
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .bdp-page .bdp-div-2 {
@@ -8586,6 +8671,7 @@ body.elementor-template-canvas .site-footer {
   gap: 16px;
   width: 100%;
   max-width: 564px;
+  min-width: 0;
 }
 
 .bdp-page .bdp-auto-flex {

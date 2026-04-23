@@ -28,7 +28,7 @@ function craftdigitally_bdp_default_author_social_urls() {
     'linkedin'  => 'https://www.linkedin.com/',
     'x'         => 'https://twitter.com/',
     'facebook'  => 'https://www.facebook.com/',
-    'instagram' => 'https://www.instagram.com/',
+    'whatsapp'  => 'https://api.whatsapp.com/send',
   );
 }
 
@@ -84,7 +84,7 @@ function craftdigitally_bdp_author_social_urls_resolved($post_id, $prefix) {
     'linkedin'  => $prefix . 'author_linkedin_url',
     'x'         => $prefix . 'author_x_url',
     'facebook'  => $prefix . 'author_facebook_url',
-    'instagram' => $prefix . 'author_instagram_url',
+    'whatsapp'  => $prefix . 'author_whatsapp_url',
   );
   $out = array();
   $any = false;

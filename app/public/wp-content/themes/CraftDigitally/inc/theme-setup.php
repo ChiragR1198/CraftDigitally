@@ -100,3 +100,53 @@ function craftdigitally_setup() {
 }
 add_action('after_setup_theme', 'craftdigitally_setup');
 
+/**
+ * Disable manual excerpts for standard Posts (blog).
+ * Blog content is authored in the main editor; excerpt UI is not used.
+ */
+function craftdigitally_disable_post_excerpt_support() {
+  remove_post_type_support('post', 'excerpt');
+}
+add_action('init', 'craftdigitally_disable_post_excerpt_support', 11);
+
+/**
+ * Admin UI: hide Categories + Tags on blog (default `post`) screens.
+ *
+ * Applies to:
+ * - Add/Edit post screen (metaboxes)
+ * - Posts listing screen (top filter dropdowns)
+ */
+function craftdigitally_admin_hide_post_categories_and_tags() {
+  if (!is_admin()) {
+    return;
+  }
+
+  remove_meta_box('categorydiv', 'post', 'side');
+  remove_meta_box('tagsdiv-post_tag', 'post', 'side');
+}
+add_action('admin_menu', 'craftdigitally_admin_hide_post_categories_and_tags', 999);
+
+/**
+ * Hide taxonomy dropdown filters in the Posts list table.
+ */
+function craftdigitally_admin_hide_post_list_tax_filters() {
+  if (!is_admin() || !function_exists('get_current_screen')) {
+    return;
+  }
+
+  $screen = get_current_screen();
+  if (!$screen || empty($screen->id) || $screen->id !== 'edit-post') {
+    return;
+  }
+
+  echo '<style>
+    /* Hide "All Categories" + "All Tags" dropdowns in Posts list table */
+    select#cat, select[name="cat"],
+    select#post_tag, select[name="post_tag"],
+    label[for="cat"], label[for="post_tag"] {
+      display: none !important;
+    }
+  </style>';
+}
+add_action('admin_head', 'craftdigitally_admin_hide_post_list_tax_filters', 20);
+

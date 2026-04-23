@@ -38,7 +38,7 @@ $cd_cs_landing_url = !empty($cd_cs_landing_pages) ? get_permalink($cd_cs_landing
 // If viewing a specific post, use post data; otherwise use page ACF fields
 if ($cd_csd_is_post_context && $cd_csd_current_post) {
   $post_id = $cd_csd_post_id;
-  $cd_csd_title = craftdigitally_get_acf('cs_hero_title', get_the_title($post_id), $post_id);
+  $cd_csd_title = get_the_title($post_id);
   // Get hero logo from ACF (prioritize ACF field, then featured image, then default)
   $thumb_url = get_the_post_thumbnail_url($post_id, 'large');
   $cd_csd_logo = craftdigitally_get_acf_image_url(
@@ -56,25 +56,64 @@ if ($cd_csd_is_post_context && $cd_csd_current_post) {
   $cd_csd_logo = craftdigitally_get_acf_image_url('cs_detail_hero_logo', get_template_directory_uri() . '/assets/images/urban-stitch-logo 1.png', $post_id);
 }
 $cd_csd_metrics_default = array(
-  array('value' => '2,117%', 'label' => 'GROWTH IN ORGANIC BLOG SESSIONS'),
-  array('value' => '11X', 'label' => 'CONVERSION RATE'),
-  array('value' => '39X', 'label' => 'BLOG CONVERSIONS'),
+  array('value' => '450%', 'label' => 'INCREASE IN ORGANIC SALES'),
+  array('value' => '12X', 'label' => 'RETURN ON SEO INVESTMENT'),
+  array('value' => '50+', 'label' => 'PAGE 1 RANKINGS'),
 );
 if ($cd_csd_is_post_context) {
-  $cd_csd_metrics = craftdigitally_get_acf_array('cs_metrics', $cd_csd_metrics_default, $post_id);
+  $cd_csd_metrics_legacy = craftdigitally_get_acf_array('cs_metrics', array(), $post_id);
+  if (!empty($cd_csd_metrics_legacy) && is_array($cd_csd_metrics_legacy)) {
+    $cd_csd_metrics = $cd_csd_metrics_legacy;
+  } else {
+    $cd_csd_metrics = array(
+      array(
+        'value' => craftdigitally_get_acf('cs_metric_1_value', $cd_csd_metrics_default[0]['value'], $post_id),
+        'label' => craftdigitally_get_acf('cs_metric_1_label', $cd_csd_metrics_default[0]['label'], $post_id),
+      ),
+      array(
+        'value' => craftdigitally_get_acf('cs_metric_2_value', $cd_csd_metrics_default[1]['value'], $post_id),
+        'label' => craftdigitally_get_acf('cs_metric_2_label', $cd_csd_metrics_default[1]['label'], $post_id),
+      ),
+      array(
+        'value' => craftdigitally_get_acf('cs_metric_3_value', $cd_csd_metrics_default[2]['value'], $post_id),
+        'label' => craftdigitally_get_acf('cs_metric_3_label', $cd_csd_metrics_default[2]['label'], $post_id),
+      ),
+    );
+  }
   $cd_csd_btn_label = craftdigitally_get_acf('cs_hero_button_label', 'Continue Reading', $post_id);
   $cd_csd_overview = craftdigitally_get_acf('cs_overview', get_the_excerpt($post_id), $post_id);
   $cd_csd_industry = craftdigitally_get_acf('cs_industry', 'Retail', $post_id);
   $cd_csd_company = craftdigitally_get_acf('cs_company_name', get_the_title($post_id), $post_id);
   $cd_csd_services = craftdigitally_get_acf('cs_services', 'Local SEO', $post_id);
 } else {
-  $cd_csd_metrics = craftdigitally_get_acf_array('cs_detail_metrics', $cd_csd_metrics_default, $post_id);
+  $cd_csd_metrics_legacy = craftdigitally_get_acf_array('cs_detail_metrics', array(), $post_id);
+  if (!empty($cd_csd_metrics_legacy) && is_array($cd_csd_metrics_legacy)) {
+    $cd_csd_metrics = $cd_csd_metrics_legacy;
+  } else {
+    $cd_csd_metrics = array(
+      array(
+        'value' => craftdigitally_get_acf('cs_detail_metric_1_value', $cd_csd_metrics_default[0]['value'], $post_id),
+        'label' => craftdigitally_get_acf('cs_detail_metric_1_label', $cd_csd_metrics_default[0]['label'], $post_id),
+      ),
+      array(
+        'value' => craftdigitally_get_acf('cs_detail_metric_2_value', $cd_csd_metrics_default[1]['value'], $post_id),
+        'label' => craftdigitally_get_acf('cs_detail_metric_2_label', $cd_csd_metrics_default[1]['label'], $post_id),
+      ),
+      array(
+        'value' => craftdigitally_get_acf('cs_detail_metric_3_value', $cd_csd_metrics_default[2]['value'], $post_id),
+        'label' => craftdigitally_get_acf('cs_detail_metric_3_label', $cd_csd_metrics_default[2]['label'], $post_id),
+      ),
+    );
+  }
   $cd_csd_btn_label = craftdigitally_get_acf('cs_detail_hero_button_label', 'Continue Reading', $post_id);
   $cd_csd_overview = craftdigitally_get_acf('cs_detail_overview', "A local home décor retailer struggled to appear in search results and attract nearby shoppers. Through a focused Local SEO strategy — including Google Business optimization, keyword targeting, and review building — we improved their online visibility and credibility. Within months, the store ranked in Google's", $post_id);
   $cd_csd_industry = craftdigitally_get_acf('cs_detail_industry', 'Retail', $post_id);
   $cd_csd_company = craftdigitally_get_acf('cs_detail_company_name', 'Tester Academy', $post_id);
   $cd_csd_services = craftdigitally_get_acf('cs_detail_services', 'Local SEO', $post_id);
 }
+
+// For real Case Study posts, Problem/Solution should come from the default editor.
+$cd_csd_editor_html = $cd_csd_is_post_context ? apply_filters('the_content', get_post_field('post_content', $post_id)) : '';
 
 $cd_csd_problem_title = $cd_csd_is_post_context 
   ? craftdigitally_get_acf('cs_problem_title', 'Problem', $post_id)
@@ -290,29 +329,38 @@ $cd_csd_form_submit = $cd_csd_is_post_context
           </div>
         </div>
 
-        <!-- Problem Section -->
-        <div class="div-3">
-          <div class="text-wrapper-5"><?php echo esc_html($cd_csd_problem_title); ?></div>
-          <div class="flexcontainer1">
-            <?php foreach ($cd_csd_problem_paras as $pp): ?>
-              <p class="div-4"><span class="span"><?php echo esc_html(isset($pp['text']) ? $pp['text'] : ''); ?></span></p>
-            <?php endforeach; ?>
+        <?php if ($cd_csd_is_post_context): ?>
+          <!-- Editor Content (Problem/Solution etc. from default editor) -->
+          <?php if (!empty($cd_csd_editor_html)): ?>
+          <div class="div-3 case-study-editor-content">
+            <?php echo wp_kses_post($cd_csd_editor_html); ?>
           </div>
-        </div>
+          <?php endif; ?>
+        <?php else: ?>
+          <!-- Problem Section -->
+          <div class="div-3">
+            <div class="text-wrapper-5"><?php echo esc_html($cd_csd_problem_title); ?></div>
+            <div class="flexcontainer1">
+              <?php foreach ($cd_csd_problem_paras as $pp): ?>
+                <p class="div-4"><span class="span"><?php echo esc_html(isset($pp['text']) ? $pp['text'] : ''); ?></span></p>
+              <?php endforeach; ?>
+            </div>
+          </div>
 
-        <!-- Solution Section -->
-        <div class="div-3">
-          <div class="text-wrapper-5"><?php echo esc_html($cd_csd_solution_title); ?></div>
-          <p class="div-4">
-            <?php echo esc_html($cd_csd_solution_intro); ?>
-          </p>
-          <p class="text">
-            <span class="text-wrapper-6"><?php echo esc_html($cd_csd_solution_lead); ?></span>
-          </p>
-          <div class="flexcontainer">
-            <?php echo wp_kses_post($cd_csd_solution_html); ?>
+          <!-- Solution Section -->
+          <div class="div-3">
+            <div class="text-wrapper-5"><?php echo esc_html($cd_csd_solution_title); ?></div>
+            <p class="div-4">
+              <?php echo esc_html($cd_csd_solution_intro); ?>
+            </p>
+            <p class="text">
+              <span class="text-wrapper-6"><?php echo esc_html($cd_csd_solution_lead); ?></span>
+            </p>
+            <div class="flexcontainer">
+              <?php echo wp_kses_post($cd_csd_solution_html); ?>
+            </div>
           </div>
-        </div>
+        <?php endif; ?>
 
         <!-- Image Section -->
         <div class="image">

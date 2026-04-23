@@ -19,13 +19,32 @@ if (empty($cd_cs_landing_url)) {
 
 // ACF fields with fallbacks
 $cd_csd_logo = craftdigitally_get_acf_image_url('cs_hero_logo', get_template_directory_uri() . '/assets/images/urban-stitch-logo 1.png', $post_id);
-$cd_csd_title = craftdigitally_get_acf('cs_hero_title', get_the_title(), $post_id);
+$cd_csd_title = get_the_title($post_id);
 $cd_csd_metrics_default = array(
-  array('value' => '2,117%', 'label' => 'GROWTH IN ORGANIC BLOG SESSIONS'),
-  array('value' => '11X', 'label' => 'CONVERSION RATE'),
-  array('value' => '39X', 'label' => 'BLOG CONVERSIONS'),
+  array('value' => '450%', 'label' => 'INCREASE IN ORGANIC SALES'),
+  array('value' => '12X', 'label' => 'RETURN ON SEO INVESTMENT'),
+  array('value' => '50+', 'label' => 'PAGE 1 RANKINGS'),
 );
-$cd_csd_metrics = craftdigitally_get_acf_array('cs_metrics', $cd_csd_metrics_default, $post_id);
+// Prefer legacy repeater (ACF Pro) data if present; otherwise use fixed fields (ACF free compatible).
+$cd_csd_metrics_legacy = craftdigitally_get_acf_array('cs_metrics', array(), $post_id);
+if (!empty($cd_csd_metrics_legacy) && is_array($cd_csd_metrics_legacy)) {
+  $cd_csd_metrics = $cd_csd_metrics_legacy;
+} else {
+  $cd_csd_metrics = array(
+    array(
+      'value' => craftdigitally_get_acf('cs_metric_1_value', $cd_csd_metrics_default[0]['value'], $post_id),
+      'label' => craftdigitally_get_acf('cs_metric_1_label', $cd_csd_metrics_default[0]['label'], $post_id),
+    ),
+    array(
+      'value' => craftdigitally_get_acf('cs_metric_2_value', $cd_csd_metrics_default[1]['value'], $post_id),
+      'label' => craftdigitally_get_acf('cs_metric_2_label', $cd_csd_metrics_default[1]['label'], $post_id),
+    ),
+    array(
+      'value' => craftdigitally_get_acf('cs_metric_3_value', $cd_csd_metrics_default[2]['value'], $post_id),
+      'label' => craftdigitally_get_acf('cs_metric_3_label', $cd_csd_metrics_default[2]['label'], $post_id),
+    ),
+  );
+}
 $cd_csd_btn_label = craftdigitally_get_acf('cs_hero_button_label', 'Continue Reading', $post_id);
 
 $cd_csd_overview = craftdigitally_get_acf('cs_overview', get_the_excerpt(), $post_id);
@@ -34,14 +53,7 @@ $cd_csd_industry = craftdigitally_get_acf('cs_industry', '', $post_id);
 $cd_csd_company = craftdigitally_get_acf('cs_company_name', get_the_title(), $post_id);
 $cd_csd_services = craftdigitally_get_acf('cs_services', '', $post_id);
 
-$cd_csd_problem_title = craftdigitally_get_acf('cs_problem_title', 'Problem', $post_id);
-$cd_csd_problem_paras_default = array();
-$cd_csd_problem_paras = craftdigitally_get_acf_array('cs_problem_paras', $cd_csd_problem_paras_default, $post_id);
-
-$cd_csd_solution_title = craftdigitally_get_acf('cs_solution_title', 'Solution', $post_id);
-$cd_csd_solution_intro = craftdigitally_get_acf('cs_solution_intro', '', $post_id);
-$cd_csd_solution_lead = craftdigitally_get_acf('cs_solution_lead', '', $post_id);
-$cd_csd_solution_html = craftdigitally_get_acf('cs_solution_html', '', $post_id);
+$cd_csd_editor_html = apply_filters('the_content', get_post_field('post_content', $post_id));
 
 $cd_csd_image_url = craftdigitally_get_acf_image_url('cs_image', get_template_directory_uri() . '/assets/images/hero.png', $post_id);
 $cd_csd_image_caption = craftdigitally_get_acf('cs_image_caption', '', $post_id);
@@ -73,11 +85,6 @@ $cd_csd_form_email_ph = craftdigitally_get_acf('cs_form_email_placeholder', 'Ema
 $cd_csd_form_service_ph = craftdigitally_get_acf('cs_form_service_placeholder', 'Service', $post_id);
 $cd_csd_form_message_ph = craftdigitally_get_acf('cs_form_message_placeholder', 'Message', $post_id);
 $cd_csd_form_submit = craftdigitally_get_acf('cs_form_submit_label', "Let's Connect", $post_id);
-
-// If ACF content is empty, use post content
-if (empty($cd_csd_overview) && empty($cd_csd_problem_paras) && empty($cd_csd_solution_html)) {
-  $cd_csd_overview = apply_filters('the_content', get_the_content());
-}
 ?>
 
 <main id="main-content" class="case-study-detail">
@@ -139,29 +146,12 @@ if (empty($cd_csd_overview) && empty($cd_csd_problem_paras) && empty($cd_csd_sol
           </div>
         </div>
 
-        <!-- Problem Section -->
-        <div class="div-3">
-          <div class="text-wrapper-5"><?php echo esc_html($cd_csd_problem_title); ?></div>
-          <div class="flexcontainer1">
-            <?php foreach ($cd_csd_problem_paras as $pp): ?>
-              <p class="div-4"><span class="span"><?php echo esc_html(isset($pp['text']) ? $pp['text'] : ''); ?></span></p>
-            <?php endforeach; ?>
-          </div>
+        <!-- Editor Content (Problem/Solution etc. from default editor) -->
+        <?php if (!empty($cd_csd_editor_html)): ?>
+        <div class="div-3 case-study-editor-content">
+          <?php echo wp_kses_post($cd_csd_editor_html); ?>
         </div>
-
-        <!-- Solution Section -->
-        <div class="div-3">
-          <div class="text-wrapper-5"><?php echo esc_html($cd_csd_solution_title); ?></div>
-          <p class="div-4">
-            <?php echo esc_html($cd_csd_solution_intro); ?>
-          </p>
-          <p class="text">
-            <span class="text-wrapper-6"><?php echo esc_html($cd_csd_solution_lead); ?></span>
-          </p>
-          <div class="flexcontainer">
-            <?php echo wp_kses_post($cd_csd_solution_html); ?>
-          </div>
-        </div>
+        <?php endif; ?>
 
         <!-- Image Section -->
         <div class="image">
